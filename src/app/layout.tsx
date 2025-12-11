@@ -1,8 +1,6 @@
 import type { Metadata } from 'next';
 import { Roboto } from 'next/font/google';
 
-import GetAllCourses from '@/services/hooks/getAllCourses';
-
 import ToastWrapper from '@/components/ToastWrapper/ToastWrapper';
 
 import ReduxProvider from '@/store/ReduxProvider';
@@ -28,7 +26,6 @@ export default function RootLayout({
     <ReduxProvider>
       <html lang="en">
         <body className={`${roboto.variable}`}>
-          <GetAllCourses />
           {children}
 
           <ToastWrapper />

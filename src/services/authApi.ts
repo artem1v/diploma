@@ -18,7 +18,6 @@ export function userLogin(
       },
     })
     .then((response) => {
-      console.log(response);
       return response.data;
     });
 }
@@ -33,7 +32,6 @@ export function userSignup(
       },
     })
     .then((response) => {
-      console.log(response);
       return response.data;
     });
 }

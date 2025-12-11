@@ -2,12 +2,13 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { SetStateAction, useState } from 'react';
+import { useState, SetStateAction } from 'react';
 import { AxiosError } from 'axios';
 import { usePathname } from 'next/navigation';
+// import classNames from 'classnames';
 import { toast } from 'react-toastify';
 
-import { addCourse, removeCourse } from '@/services/api/courseApi';
+import { addCourse, removeCourse } from '@/services/courseApi';
 
 import { useAppDispatch, useAppSelector } from '@/store/store';
 import { updateSelectedCourses } from '@/store/features/authSlice';
@@ -19,11 +20,18 @@ import Progressbar from '../Progressbar/Progressbar';
 import {
   CourseItemInterface,
   WorkoutsStateInterface,
+  WorkoutProgressInterface,
+  CourseProgressInterface,
 } from '@/sharedInterfaces/sharedInterfaces';
 
-import { pictureDefiner, progressbarCourseDefiner } from '@/services/utilities';
+import { pictureDefiner, progressbarLevelDefiner } from '@/services/utilities';
 
 import styles from './courseItem.module.css';
+
+// className={classNames(
+//               styles.course__infoDesign,
+//               styles.course__durationInDays,
+//             )}
 
 export default function CourseItem({
   courseItem,
@@ -31,34 +39,29 @@ export default function CourseItem({
   isAbleToAdd,
   courseWorkouts,
   workoutsPopUp,
-  confirmPopup,
 }: {
   courseItem: CourseItemInterface;
   withProgress: boolean;
   isAbleToAdd: boolean;
   courseWorkouts?: WorkoutsStateInterface;
+  progressWorkouts?: CourseProgressInterface;
   workoutsPopUp?: React.Dispatch<SetStateAction<boolean>>;
-  confirmPopup?: React.Dispatch<SetStateAction<boolean>>;
 }) {
   const pathname = usePathname();
   const dispatch = useAppDispatch();
 
   const { user } = useAppSelector((state) => state.authentication);
 
-  const [addRemoveLoading, setAddRemoveLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   let progressbarLevel: number = 0;
   if (withProgress && courseWorkouts) {
-    progressbarLevel = progressbarCourseDefiner(
+    progressbarLevel = progressbarLevelDefiner(
       user.courseProgress,
       courseItem._id,
       courseWorkouts.workoutsList,
     );
   }
-
-  const isCourseCompleted = user.courseProgress.find(
-    (course) => course.courseId === courseItem._id,
-  )?.courseCompleted;
 
   function onClickSetCourse() {
     dispatch(setCurrentCourse(courseItem));
@@ -70,11 +73,11 @@ export default function CourseItem({
     event.preventDefault();
     event.stopPropagation();
 
-    setAddRemoveLoading(true);
+    setIsLoading(true);
 
     if (!user.token) {
       toast.warning('Необходима авторизация. Войдите в аккаунт');
-      setAddRemoveLoading(false);
+      setIsLoading(false);
       return;
     }
 
@@ -82,16 +85,16 @@ export default function CourseItem({
 
     if (isAlreadySelected && pathname === '/main') {
       toast.info('Курс уже добавлен!');
-      setAddRemoveLoading(false);
+      setIsLoading(false);
       return;
     }
 
     const usedFunction = isAlreadySelected ? removeCourse : addCourse;
 
     try {
-      const resultOfUserAction = await usedFunction(courseItem._id, user.token);
+      const resultOfAdding = await usedFunction(courseItem._id, user.token);
 
-      toast.success(resultOfUserAction);
+      toast.success(resultOfAdding);
       dispatch(updateSelectedCourses(courseItem._id));
     } catch (error) {
       if (error instanceof AxiosError) {
@@ -102,27 +105,27 @@ export default function CourseItem({
         }
       }
     } finally {
-      setAddRemoveLoading(false);
+      setIsLoading(false);
     }
+
+    return;
   }
 
   return (
     <div className={styles.course}>
       <div className={styles.course__pictureContainer}>
         <Image
-          className={styles.course__image}
-          priority
           src={pictureDefiner(courseItem.nameEN, 'item')}
           alt="course picture"
           width={360}
           height={325}
         />
 
-        {addRemoveLoading ? (
-          <div className={styles.addRemove__icon_loading}></div>
+        {isLoading ? (
+          <div className={styles.add__loadingIcon}></div>
         ) : (
           <svg
-            className={styles.addRemove__icon}
+            className={styles.add__icon}
             onClick={(event) => addRemoveCourse(event)}
             width="32"
             height="32"
@@ -145,10 +148,7 @@ export default function CourseItem({
       </div>
 
       <div className={styles.course__infoContainer}>
-        <Link
-          onClick={onClickSetCourse}
-          href={`/main/course/${courseItem._id}`}
-        >
+        <Link onClick={onClickSetCourse} href={`/course/${courseItem._id}`}>
           <h3 className={styles.course__title}>{courseItem.nameRU}</h3>
 
           <div className={styles.course__infoWrapper}>
@@ -224,12 +224,6 @@ export default function CourseItem({
             className={styles.course__workoutsBtn}
             onClick={() => {
               onClickSetCourse();
-
-              if (isCourseCompleted && confirmPopup) {
-                confirmPopup(true);
-                return;
-              }
-
               if (workoutsPopUp) {
                 workoutsPopUp(true);
               }
