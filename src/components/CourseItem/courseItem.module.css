@@ -1,0 +1,189 @@
+.course {
+  width: 360px;
+  border-radius: 30px;
+  box-shadow: 0px 4px 67px -12px rgba(0, 0, 0, 0.13);
+  background: rgba(255, 255, 255, 1);
+
+  @media screen and (max-width: 760px) {
+    width: 343px;
+  }
+}
+
+.course__pictureContainer {
+  position: relative;
+  height: 325px;
+  border-radius: 30px;
+  overflow: hidden;
+}
+
+.course__image {
+  @media screen and (max-width: 760px) {
+    transform: translateX(-8.5px);
+  }
+}
+
+.course__pictureContainer span {
+  display: block;
+  line-height: 0;
+}
+
+.addRemove__icon_loading {
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  right: 20px;
+  top: 20px;
+  border-radius: 50%;
+  border: 7px #ffffff solid;
+  background-color: transparent;
+  animation: loadingPulse 2s linear infinite;
+}
+
+@keyframes loadingPulse {
+  from {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.33;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.addRemove__icon,
+.addRemove__icon_skeleton {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  cursor: pointer;
+}
+
+.addRemove__icon_skeleton {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #ffffff;
+  cursor: default;
+}
+
+.course__infoContainer {
+  padding: 24px 30px 15px 30px;
+
+  @media screen and (max-width: 760px) {
+    padding: 24px 21.5px 15px 21.5px;
+  }
+}
+
+.course__infoContainer span {
+  display: block;
+  line-height: 0;
+}
+
+.course__infoContainer a {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.course__title {
+  font-weight: 500;
+  font-size: 32px;
+  line-height: 110%;
+  letter-spacing: 0px;
+
+  @media screen and (max-width: 760px) {
+    font-size: 24px;
+  }
+}
+
+.course__title_skeleton {
+  margin-bottom: 20px;
+
+  @media screen and (max-width: 760px) {
+    height: 26px !important;
+  }
+}
+
+.course__infoWrapper {
+  width: 300px;
+  height: 82px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.course__infoWrapper span {
+  display: block;
+  line-height: 0;
+}
+
+.course__infoDesign {
+  width: fit-content;
+  height: 38px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 6px;
+  padding: 10px;
+  border-radius: 50px;
+  background: rgba(247, 247, 247, 1);
+}
+
+.difficulty__container {
+  width: 20px;
+  height: 14px;
+  display: flex;
+  align-items: flex-end;
+}
+
+.course__progressContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.course__progressQuantity {
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 110%;
+  letter-spacing: 0px;
+}
+
+.course__workoutsBtn {
+  width: 100%;
+  height: 52px;
+  border-radius: 46px;
+  margin-top: 40px;
+  padding: 16px;
+  text-align: center;
+  border: none;
+  background-color: #bcec30;
+  transition: 0.2s;
+  text-align: center;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 110%;
+  letter-spacing: 0px;
+  cursor: pointer;
+
+  @media screen and (max-width: 760px) {
+    font-size: 16px;
+  }
+}
+
+@media (hover: hover) {
+  .course__workoutsBtn:hover {
+    background-color: #c6ff00;
+  }
+}
+
+.course__workoutsBtn:active {
+  color: #ffffff;
+  background-color: #000000;
+}

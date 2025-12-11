@@ -1,0 +1,27 @@
+.Toastify__toast {
+  background-color: #ffffff;
+  color: #000000;
+  border-radius: 8px;
+  box-shadow: 0px 4px 67px -12px rgba(0, 0, 0, 0.13);
+}
+
+.Toastify__close-button--light {
+  color: linear-gradient(115.81deg, #151720 34.98%, #1e212e 91.5%);
+  opacity: 1;
+}
+
+.Toastify__progress-bar--success {
+  background: #c6ff00;
+}
+
+.Toastify__close-button:hover {
+  transform: scale(1.2);
+}
+
+.Toastify__progress-bar--error {
+  background: #f84d4d;
+}
+
+.Toastify__toast-icon svg {
+  fill: #bcec30;
+}
