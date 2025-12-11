@@ -52,11 +52,27 @@ export default function MarkWorkoutProgress({
     setInputWithErrorId(null);
 
     const currentInputId = parseInt(event.currentTarget.id);
+
+    const currentInputName = event.currentTarget.name.toString();
+    const currentExercise = currentWorkout!.exercises.find(
+      (exercise) => exercise._id === currentInputName,
+    );
+
     let currentInputValue: number;
     currentInputValue = parseInt(event.currentTarget.value);
 
     if (Number.isNaN(currentInputValue)) {
       currentInputValue = 0;
+    }
+
+    if (currentExercise) {
+      if (currentExercise.quantity < currentInputValue) {
+        toast.warning(
+          `Пожалуйста, введите число от 1 до ${currentExercise?.quantity}`,
+        );
+        setInputWithErrorId(currentInputId);
+        return;
+      }
     }
 
     if (currentInputValue < 0) {
@@ -158,7 +174,7 @@ export default function MarkWorkoutProgress({
                       className={styles.markWorkoutProgress__workoutLabel}
                       htmlFor={index.toString()}
                     >
-                      {`Сколько раз вы сделали ${exercise.name.split(' (')[0].toLowerCase()}?`}
+                      {`Сколько раз вы сделали ${exercise.name.split(' (')[0].toLowerCase()} (из ${exercise.quantity})?`}
                     </label>
 
                     <input
@@ -180,7 +196,7 @@ export default function MarkWorkoutProgress({
                       type="number"
                       placeholder={`${workoutExercisesProgress?.progressData[index] || 0}`}
                       id={index.toString()}
-                      name="WorkoutProgressItemInput"
+                      name={exercise._id}
                       onChange={(event) => onWorkoutProgressInputChange(event)}
                     />
                   </div>
