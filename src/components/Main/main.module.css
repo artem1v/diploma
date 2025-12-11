@@ -1,10 +1,10 @@
 .auth__popupListener {
   position: absolute;
-  z-index: 100;
-  top: -200px;
-  left: calc((var(--container-width) / 2) - 50vw);
-  width: 100vw;
-  height: calc(100vh + 200px);
+  top: -50px;
+  left: -50%;
+  z-index: 50;
+  width: 200%;
+  height: calc(100% + 50px);
   opacity: 0.2;
   background-color: #000000;
 }
@@ -12,29 +12,15 @@
 .mainTitle__container {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 50px;
-
-  @media screen and (max-width: 760px) {
-    margin-bottom: 34px;
-  }
+  padding-bottom: 50px;
 }
 
 .mainTitle__text {
   font-weight: 500;
+  font-style: Medium;
   font-size: 60px;
   line-height: 100%;
   letter-spacing: 0px;
-
-  @media screen and (max-width: 760px) {
-    font-size: 32px;
-    line-height: 110%;
-  }
-}
-
-.mainTitle__lineBreaks {
-  @media screen and (max-width: 760px) {
-    display: none;
-  }
 }
 
 .slogan__container {
@@ -46,16 +32,12 @@
   width: 288px;
   height: 102px;
   border-radius: 5px;
-  background-color: rgba(188, 236, 48, 1);
+  background: rgba(188, 236, 48, 1);
 
   font-weight: 400;
   font-size: 32px;
   line-height: 110%;
   letter-spacing: 0px;
-
-  @media screen and (max-width: 760px) {
-    display: none;
-  }
 }
 
 .slogan__textCallout {
@@ -67,51 +49,4 @@
   display: flex;
   flex-wrap: wrap;
   gap: 40px;
-
-  @media screen and (max-width: 760px) {
-    justify-content: center;
-    gap: 24px;
-  }
-}
-
-.courses__error_message {
-  font-weight: 500;
-  font-size: 32px;
-  line-height: 110%;
-  letter-spacing: 0px;
-}
-
-.courses__anchorBtn_container {
-  width: 100%;
-  display: flex;
-  justify-content: flex-end;
-
-  @media screen and (min-width: 711px) {
-    display: none;
-  }
-}
-
-.courses__anchorBtn {
-  width: 127px;
-  height: 52px;
-  margin-top: 24px;
-  margin-bottom: 29px;
-  padding: 16px;
-  border: none;
-  border-radius: 46px;
-  background-color: #bcec30;
-
-  text-align: center;
-  font-weight: 400;
-  font-size: 18px;
-  line-height: 110%;
-  letter-spacing: 0px;
-}
-
-.courses__anchorBtn:active {
-  background-color: #000000;
-
-  a {
-    color: #ffffff;
-  }
 }

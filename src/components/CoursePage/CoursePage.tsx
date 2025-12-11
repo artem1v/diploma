@@ -1,136 +1,43 @@
 'use client';
 
 import Image from 'next/image';
-import classNames from 'classnames';
-import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
-import { AxiosError } from 'axios';
-import { toast } from 'react-toastify';
 
-import { addCourse } from '@/services/api/courseApi';
-
-import { useAppDispatch, useAppSelector } from '@/store/store';
-import { updateSelectedCourses } from '@/store/features/authSlice';
-import { setCurrentCourse } from '@/store/features/courseSlice';
-import { setUtilityLoading } from '@/store/features/utilitySlice';
-
-import Auth from '../Auth/Auth';
 import Header from '../Header/Header';
 import FittingNumber from './FittingNumber';
+
+import { useAppSelector } from '@/store/store';
 
 import { pictureDefiner } from '@/services/utilities';
 
 import styles from './coursePage.module.css';
 
 export default function CoursePage() {
-  const params = useParams<{ id: string }>();
-  const dispatch = useAppDispatch();
-
-  const { user } = useAppSelector((state) => state.authentication);
-  const { allCourses, currentCourse } = useAppSelector(
-    (state) => state.courses,
-  );
-  const { loading } = useAppSelector((state) => state.utilities);
-
-  const [isOpenAuthPopup, setIsOpenAuthPopup] = useState<boolean>(false);
-
-  const currentCourseId = params.id;
-  const isAlreadySelected = user.selectedCourses.includes(currentCourseId);
-  const course = allCourses.find(
-    (courseEl) => courseEl._id === currentCourseId,
-  );
-
-  async function addingCourseButtonHandler(
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-  ) {
-    event.preventDefault();
-    event.stopPropagation();
-
-    dispatch(setUtilityLoading(true));
-
-    if (!user.token) {
-      toast.warning('Необходима авторизация. Войдите в аккаунт');
-      dispatch(setUtilityLoading(false));
-      return;
-    }
-
-    if (isAlreadySelected) {
-      toast.info('Чтобы удалить курс, перейдите в профиль');
-      dispatch(setUtilityLoading(false));
-      return;
-    }
-
-    try {
-      const resultOfAdding = await addCourse(currentCourseId, user.token);
-
-      toast.success(resultOfAdding);
-      dispatch(updateSelectedCourses(currentCourseId));
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        if (error.response) {
-          toast.error(error.response.data.message);
-        } else {
-          toast.error('Функционал временно недоступен, попробуйте позже');
-        }
-      }
-    } finally {
-      dispatch(setUtilityLoading(false));
-    }
-  }
-
-  useEffect(() => {
-    if (!currentCourse && course) {
-      dispatch(setCurrentCourse(course));
-    }
-  }, [course]);
+  // export default function CoursePage({ id }: { id: string }) {
+  const { currentCourse } = useAppSelector((state) => state.courses);
 
   return (
-    <div style={{ position: 'relative' }}>
-      {isOpenAuthPopup ? (
-        <>
-          <div
-            className={styles.auth__popupListener}
-            onClick={() => {
-              setIsOpenAuthPopup(false);
-            }}
-          ></div>
-          <Auth authPopup={setIsOpenAuthPopup} />
-        </>
-      ) : (
-        ''
-      )}
-
-      <Header withInscription={true} authPopup={setIsOpenAuthPopup} />
+    <>
+      <Header withInscription={true} />
       <div className={styles.course__pictureContainer}>
         <Image
-          className={styles.course__image}
-          priority
-          src={pictureDefiner(course ? course.nameEN : 'default', 'page')}
+          src={pictureDefiner(
+            currentCourse ? currentCourse.nameEN : 'default',
+            'page',
+          )}
           alt="course picture"
           width={1160}
           height={310}
         />
 
-        <Image
-          className={styles.course__image_mobile}
-          priority
-          src={pictureDefiner(course ? course.nameEN : 'default', 'item')}
-          alt="course picture mobile"
-          width={343}
-          height={325}
-        />
-
-        <h2 className={styles.course__title}>{course?.nameRU}</h2>
+        <h2 className={styles.course__title}>{currentCourse?.nameRU}</h2>
       </div>
 
       <h3 className={styles.auxiliary__title}>Подойдет для вас, если:</h3>
 
       <ul className={styles.fitting__container}>
-        {course?.fitting.map((fittingEl: string, index) => (
+        {currentCourse?.fitting.map((fittingEl: string, index) => (
           <li key={index} className={styles.fitting__item}>
-            <div>
-              <FittingNumber number={index + 1} />
-            </div>
+            <FittingNumber number={index + 1} />
             <p className={styles.fitting__itemText}>{fittingEl}</p>
           </li>
         ))}
@@ -139,7 +46,7 @@ export default function CoursePage() {
       <h3 className={styles.auxiliary__title}>Направления</h3>
 
       <ul className={styles.directions__container}>
-        {course?.directions.map((directionEl: string, index) => (
+        {currentCourse?.directions.map((directionEl: string, index) => (
           <li key={index} className={styles.directions__item}>
             <svg
               width="20"
@@ -174,20 +81,8 @@ export default function CoursePage() {
               <li>помогают противостоять стрессам</li>
             </ul>
 
-            <button
-              className={classNames(styles.addingCourse__btn, {
-                [styles.addingCourse__btn_inactive]: loading,
-              })}
-              disabled={loading}
-              onClick={(event) => {
-                addingCourseButtonHandler(event);
-              }}
-            >
-              {user.token
-                ? isAlreadySelected
-                  ? 'Курс уже добавлен'
-                  : 'Добавить курс'
-                : 'Войдите, чтобы добавить курс'}
+            <button className={styles.addingCourse__btn}>
+              Войдите, чтобы добавить курс
             </button>
           </div>
         </div>
@@ -195,7 +90,6 @@ export default function CoursePage() {
         <div className={styles.addingCourse__picture}>
           <Image
             className={styles.addingCourse__sportsman}
-            priority
             src={'/img/sportsman.png'}
             alt="sportsman"
             width={487}
@@ -211,14 +105,6 @@ export default function CoursePage() {
           />
 
           <Image
-            className={styles.addingCourse__vector_mobile}
-            src={'/img/vector-mobile.png'}
-            alt="vector"
-            width={475}
-            height={339}
-          />
-
-          <Image
             className={styles.addingCourse__shoulderVector}
             src={'/img/shoulder-vector.png'}
             alt="vector"
@@ -227,6 +113,6 @@ export default function CoursePage() {
           />
         </div>
       </div>
-    </div>
+    </>
   );
 }
