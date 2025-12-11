@@ -2,49 +2,33 @@
 
 import { useEffect, useState } from 'react';
 import { AxiosError } from 'axios';
-import { toast } from 'react-toastify';
 
-import {
-  getAllCourses,
-  getWorkoutsList,
-  getCourseProgress,
-} from '@/services/courseApi';
+import { getAllCourses } from '@/services/courseApi';
 
 import { useAppDispatch, useAppSelector } from '@/store/store';
-import { setAllCourses } from '@/store/features/courseSlice';
+import { setisOpenPopup } from '@/store/features/authSlice';
 
-import Auth from '../Auth/Auth';
 import Header from '@/components/Header/Header';
 import CourseItem from '@/components/CourseItem/CourseItem';
-import CourseItemSkeleton from '../CourseItem/CourseItemSkeleton';
+import Auth from '../Auth/Auth';
 
-import {
-  CourseItemInterface,
-  CourseProgressInterface,
-  WorkoutsListInterface,
-  WorkoutsStateInterface,
-} from '@/sharedInterfaces/sharedInterfaces';
+import { CourseItemInterface } from '@/sharedInterfaces/sharedInterfaces';
 
 import styles from './main.module.css';
 
 export default function Main() {
   const dispatch = useAppDispatch();
 
-  const { user } = useAppSelector((state) => state.authentication);
+  const { isOpenPopup } = useAppSelector((state) => state.authentication);
 
-  const [isOpenAuthPopup, setIsOpenAuthPopup] = useState<boolean>(false);
   const [courses, setCourses] = useState<CourseItemInterface[]>([]);
   const [errorMessage, setErrorMessage] = useState<string>('');
-
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     async function getCourses() {
-      setIsLoading(true);
-
       try {
         const allCourses = await getAllCourses();
-        dispatch(setAllCourses(allCourses));
         setCourses(allCourses);
       } catch (error) {
         if (error instanceof AxiosError) {
@@ -64,21 +48,21 @@ export default function Main() {
 
   return (
     <div style={{ position: 'relative' }}>
-      {isOpenAuthPopup ? (
+      {isOpenPopup ? (
         <>
           <div
             className={styles.auth__popupListener}
             onClick={() => {
-              setIsOpenAuthPopup(false);
+              dispatch(setisOpenPopup(!isOpenPopup));
             }}
           ></div>
-          <Auth authPopup={setIsOpenAuthPopup} />
+          <Auth />
         </>
       ) : (
         ''
       )}
 
-      <Header withInscription={true} authPopup={setIsOpenAuthPopup} />
+      <Header withInscription={true} />
 
       <div className={styles.mainTitle__container}>
         <h1 className={styles.mainTitle__text}>
@@ -108,29 +92,18 @@ export default function Main() {
 
       <div className={styles.courses__container}>
         {isLoading ? (
-          Array.from({ length: 6 }).map((item, index) => (
-            <div key={index}>
-              <CourseItemSkeleton withProgress={false} />
-            </div>
-          ))
+          <div>Загрузка курсов...</div>
         ) : errorMessage ? (
-          <p className={styles.courses__error_message}>{errorMessage}</p>
+          errorMessage
         ) : (
           courses.map((courseItem) => (
             <CourseItem
               key={courseItem._id}
               courseItem={courseItem}
-              withProgress={false}
-              isAbleToAdd={true}
+              withAuthentication={false}
             />
           ))
         )}
-      </div>
-
-      <div className={styles.courses__anchorBtn_container}>
-        <button className={styles.courses__anchorBtn}>
-          <a href="#portalToTheTopOfThePage">Наверх ↑ </a>
-        </button>
       </div>
     </div>
   );

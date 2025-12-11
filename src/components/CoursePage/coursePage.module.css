@@ -1,14 +1,3 @@
-.auth__popupListener {
-  position: absolute;
-  top: -100px;
-  left: -100%;
-  z-index: 100;
-  width: 300%;
-  height: calc(100% + 150px);
-  opacity: 0.2;
-  background-color: #000000;
-}
-
 .course__pictureContainer {
   position: relative;
 }
@@ -35,9 +24,8 @@
 }
 
 .fitting__container {
-  display: grid;
-  grid-auto-flow: column;
-  grid-template-columns: repeat(3, auto);
+  display: flex;
+  justify-content: center;
   gap: 17px;
 }
 
@@ -66,10 +54,15 @@
 .directions__container {
   display: grid;
   align-items: center;
+  align-items: center;
+  grid-auto-flow: column;
   grid-template-columns: repeat(3, 1fr);
-  gap: 34px;
+  grid-template-rows: repeat(2, 1fr);
+  column-gap: 34px;
+  row-gap: 34px;
 
   width: 100%;
+  height: 146px;
   border-radius: 28px;
   padding: 30px;
   background: #bcec30;
@@ -103,10 +96,8 @@
 }
 
 .addingCourse__textWrapper {
-  max-width: 440px;
+  width: 440px;
   margin: 40px;
-  position: relative;
-  z-index: 50;
 }
 
 .addingCourse__title {
@@ -150,18 +141,6 @@
   letter-spacing: 0px;
 }
 
-.addingCourse__btn:hover {
-  background-color: #c6ff00;
-}
-
-.addingCourse__btn_inactive {
-  background-color: #f7f7f7;
-}
-
-.addingCourse__btn_inactive:hover {
-  background-color: #f7f7f7;
-}
-
 .addingCourse__picture {
   position: absolute;
   width: 680px;
@@ -171,14 +150,14 @@
 
 .addingCourse__sportsman {
   position: absolute;
-  z-index: 75;
+  z-index: 100;
   right: 30px;
   bottom: 30px;
 }
 
 .addingCourse__vector {
   position: absolute;
-  z-index: 25;
+  z-index: 50;
   bottom: -40px;
 }
 
