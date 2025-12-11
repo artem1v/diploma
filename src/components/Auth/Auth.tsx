@@ -2,19 +2,23 @@
 
 import Image from 'next/image';
 import classNames from 'classnames';
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { SetStateAction, useState } from 'react';
 import { AxiosError } from 'axios';
+import { toast } from 'react-toastify';
 
-import { userLogin, userSignup } from '@/services/authApi';
+import { userLogin, userSignup } from '@/services/api/authApi';
+import { getUserData } from '@/services/api/courseApi';
 
 import { useAppDispatch, useAppSelector } from '@/store/store';
 import {
-  setisOpenPopup,
   setisSignUp,
+  setUserId,
   setStorageLogin,
   setStorageToken,
+  setSelectedCourses,
+  setCourseProgress,
 } from '@/store/features/authSlice';
+import { setUtilityLoading } from '@/store/features/utilitySlice';
 
 import {
   LoginAndSignupDataInterface,
@@ -26,24 +30,17 @@ import { formErrors } from '@/services/utilities';
 
 import styles from './auth.module.css';
 
-// asdzxcqwe@example.com
-// Asdzxcqwe@@!
-
-export default function Auth() {
-  const router = useRouter();
+export default function Auth({
+  authPopup,
+}: {
+  authPopup: React.Dispatch<SetStateAction<boolean>>;
+}) {
   const dispatch = useAppDispatch();
 
-  const { isOpenPopup, isSignup } = useAppSelector(
-    (state) => state.authentication,
-  );
+  const { isSignup } = useAppSelector((state) => state.authentication);
+  const { loading } = useAppSelector((state) => state.utilities);
 
-  const [loginAndSignupData, setLoginAndSignupData] =
-    useState<LoginAndSignupDataInterface>({
-      email: '',
-      password: '',
-    });
   const [passwordCheck, setPasswordCheck] = useState<string>('');
-
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [errors, setErrors] = useState<{
     email: boolean;
@@ -55,7 +52,11 @@ export default function Auth() {
     passwordCheck: false,
   });
 
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loginAndSignupData, setLoginAndSignupData] =
+    useState<LoginAndSignupDataInterface>({
+      email: '',
+      password: '',
+    });
 
   function onFormInputChange(event: React.ChangeEvent<HTMLInputElement>) {
     switch (event.currentTarget.name) {
@@ -94,13 +95,11 @@ export default function Auth() {
     dispatch(setisSignUp(!isSignup));
   }
 
-  function userFormRequest(event: React.MouseEvent<HTMLButtonElement>) {
+  async function userFormRequest(event: React.MouseEvent<HTMLButtonElement>) {
     event.preventDefault();
     event.stopPropagation();
 
-    setLoading(true);
-
-    console.log(loginAndSignupData);
+    dispatch(setUtilityLoading(true));
 
     if (
       !formErrors({
@@ -111,60 +110,65 @@ export default function Auth() {
         isSignup,
       })
     ) {
-      setLoading(false);
+      dispatch(setUtilityLoading(false));
       return;
     }
 
     const usedFunction = isSignup ? userSignup : userLogin;
+    try {
+      const response = await usedFunction(loginAndSignupData);
 
-    usedFunction(loginAndSignupData)
-      .then((response) => {
-        if (!isSignup) {
-          const loginResponse = response as LoginPromiseInterface;
-          dispatch(setStorageLogin(loginAndSignupData.email));
-          dispatch(setStorageToken(loginResponse.token));
-        } else {
-          // const signupResponse = response as SignupPromiseInterface;
-          // toast.success(signupResponse.message);
-        }
+      if (!isSignup) {
+        const loginResponse = response as LoginPromiseInterface;
+        dispatch(setStorageLogin(loginAndSignupData.email));
+        dispatch(setStorageToken(loginResponse.token));
 
-        dispatch(setisOpenPopup(!isOpenPopup));
-        return response;
-      })
-      .catch((error) => {
-        if (error instanceof AxiosError) {
-          if (error.response) {
-            setErrorMessage(error.response.data.message);
+        toast.success('Вход выполнен');
+        authPopup(false);
 
-            const hasEmail: boolean = error.response.data.message
-              .toLowerCase()
-              .includes('email');
+        getUserData(loginResponse.token).then((response) => {
+          dispatch(setUserId(response._id));
+          dispatch(setSelectedCourses(response.selectedCourses));
+          dispatch(setCourseProgress(response.courseProgress));
+        });
+      } else {
+        const signupResponse = response as SignupPromiseInterface;
+        toast.success(signupResponse.message);
+        onFormTypeChange(event);
+      }
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        if (error.response) {
+          setErrorMessage(error.response.data.message);
 
-            switch (hasEmail) {
-              case true:
-                setErrors({
-                  ...errors,
-                  email: true,
-                });
-                break;
+          const hasEmail: boolean = error.response.data.message
+            .toLowerCase()
+            .includes('email');
 
-              case false:
-                setErrors({
-                  ...errors,
-                  password: true,
-                });
-                break;
-            }
-          } else if (error.request) {
-            setErrorMessage('Проверьте интернет-соединение и попробуйте позже');
-          } else {
-            setErrorMessage('Неизвестная ошибка');
+          switch (hasEmail) {
+            case true:
+              setErrors({
+                ...errors,
+                email: true,
+              });
+              break;
+
+            case false:
+              setErrors({
+                ...errors,
+                password: true,
+              });
+              break;
           }
+        } else if (error.request) {
+          setErrorMessage('Проверьте интернет-соединение и попробуйте позже');
+        } else {
+          setErrorMessage('Неизвестная ошибка');
         }
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+      }
+    } finally {
+      dispatch(setUtilityLoading(false));
+    }
   }
 
   return (
@@ -220,14 +224,9 @@ export default function Auth() {
         <div className={styles.auth__btnsContainer}>
           <button
             disabled={loading}
-            className={classNames(
-              styles.auth__btnSendData,
-              styles.auth__btnText,
-              {
-                [styles.auth__btnSendData_inactive]: loading,
-                [styles.auth__btnText_inactive]: loading,
-              },
-            )}
+            className={classNames(styles.auth__btnSendData, {
+              [styles.auth__btnSendData_inactive]: loading,
+            })}
             onClick={(event) => {
               userFormRequest(event);
             }}
@@ -237,14 +236,9 @@ export default function Auth() {
 
           <button
             disabled={loading}
-            className={classNames(
-              styles.auth__btnFormChange,
-              styles.auth__btnText,
-              {
-                [styles.auth__btnFormChange_inactive]: loading,
-                [styles.auth__btnText_inactive]: loading,
-              },
-            )}
+            className={classNames(styles.auth__btnFormChange, {
+              [styles.auth__btnFormChange_inactive]: loading,
+            })}
             onClick={(event) => {
               onFormTypeChange(event);
             }}

@@ -10,19 +10,19 @@ import {
 const URL_TRACKS = 'https://wedev-api.sky.pro';
 
 export function getAllCourses(): Promise<CourseItemInterface[]> {
-  return axios(URL_TRACKS + '/api/fitness/courses').then((response) => {
+  return axios.get(URL_TRACKS + '/api/fitness/courses').then((response) => {
     return response.data;
   });
 }
 
-export function getUserData(token: string): Promise<UserDataInterface> {
-  return axios(URL_TRACKS + '/api/fitness/users/me', {
+export async function getUserData(token: string): Promise<UserDataInterface> {
+  const response = await axios.get(URL_TRACKS + '/api/fitness/users/me', {
     headers: {
       Authorization: `Bearer ${token}`,
     },
-  }).then((response) => {
-    return response.data.user;
   });
+
+  return response.data.user;
 }
 
 export function addCourse(courseId: string, token: string) {
@@ -57,25 +57,28 @@ export function removeCourse(courseId: string, token: string) {
     });
 }
 
-export function getWorkoutsList(
+export async function getWorkoutsList(
   courseId: string,
   token: string,
 ): Promise<WorkoutsListInterface[]> {
-  return axios(URL_TRACKS + `/api/fitness/courses/${courseId}/workouts`, {
-    headers: {
-      'Content-Type': '',
-      Authorization: `Bearer ${token}`,
+  const response = await axios.get(
+    URL_TRACKS + `/api/fitness/courses/${courseId}/workouts`,
+    {
+      headers: {
+        'Content-Type': '',
+        Authorization: `Bearer ${token}`,
+      },
     },
-  }).then((response) => {
-    return response.data;
-  });
+  );
+
+  return response.data;
 }
 
-export function getCourseProgress(
+export async function getCourseProgress(
   courseId: string,
   token: string,
 ): Promise<CourseProgressInterface> {
-  return axios(
+  const response = await axios.get(
     URL_TRACKS + `/api/fitness/users/me/progress?courseId=${courseId}`,
     {
       headers: {
@@ -83,9 +86,9 @@ export function getCourseProgress(
         Authorization: `Bearer ${token}`,
       },
     },
-  ).then((response) => {
-    return response.data;
-  });
+  );
+
+  return response.data;
 }
 
 export function resetCourseProgress(

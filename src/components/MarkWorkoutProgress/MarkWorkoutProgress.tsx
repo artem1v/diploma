@@ -1,7 +1,7 @@
 'use client';
 
 import classNames from 'classnames';
-import { useState, SetStateAction } from 'react';
+import { useState } from 'react';
 import { toast } from 'react-toastify';
 import { AxiosError } from 'axios';
 
@@ -9,11 +9,11 @@ import {
   saveWorkoutProgress,
   getUserData,
   resetWorkoutProgress,
-} from '@/services/courseApi';
+} from '@/services/api/courseApi';
 
 import { useAppDispatch, useAppSelector } from '@/store/store';
 import { setCourseProgress } from '@/store/features/authSlice';
-import { setCurrentCourse } from '@/store/features/courseSlice';
+import { setUtilityLoading } from '@/store/features/utilitySlice';
 
 import { WorkoutProgressInterface } from '@/sharedInterfaces/sharedInterfaces';
 
@@ -21,14 +21,12 @@ import styles from './markWorkoutProgress.module.css';
 
 export default function MarkWorkoutProgress({
   withExercises,
-  isCurrentWorkoutCompleted,
-  currentWorkoutExercisesProgress,
-  progressPopUp,
+  isWorkoutCompleted,
+  workoutExercisesProgress,
 }: {
   withExercises: number | undefined;
-  isCurrentWorkoutCompleted: boolean;
-  currentWorkoutExercisesProgress: WorkoutProgressInterface | undefined;
-  progressPopUp?: React.Dispatch<SetStateAction<boolean>>;
+  isWorkoutCompleted: boolean;
+  workoutExercisesProgress: WorkoutProgressInterface | undefined;
 }) {
   const dispatch = useAppDispatch();
 
@@ -36,15 +34,14 @@ export default function MarkWorkoutProgress({
   const { currentCourse, currentWorkout } = useAppSelector(
     (state) => state.courses,
   );
+  const { loading } = useAppSelector((state) => state.utilities);
 
   const [exercisesProgress, setExercisesProgress] = useState<number[]>(
-    currentWorkoutExercisesProgress?.progressData ||
+    workoutExercisesProgress?.progressData ||
       Array.from({ length: currentWorkout?.exercises.length || 0 }, () => 0),
   );
-
   const [progressMarkResult, setProgressMarkResult] = useState<boolean>(false);
   const [inputWithErrorId, setInputWithErrorId] = useState<number | null>();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const requiredExercisesQuantity: number[] | undefined =
     currentWorkout?.exercises.map((exercise) => exercise.quantity);
@@ -81,13 +78,13 @@ export default function MarkWorkoutProgress({
     event.preventDefault();
     event.stopPropagation();
 
-    setIsLoading(true);
+    dispatch(setUtilityLoading(true));
 
     try {
       if (currentCourse && currentWorkout) {
         let resultMessage;
 
-        if (isCurrentWorkoutCompleted) {
+        if (isWorkoutCompleted) {
           resultMessage = await resetWorkoutProgress(
             currentCourse?._id,
             currentWorkout?._id,
@@ -121,7 +118,7 @@ export default function MarkWorkoutProgress({
         }
       }
     } finally {
-      setIsLoading(false);
+      dispatch(setUtilityLoading(false));
     }
   }
 
@@ -169,11 +166,9 @@ export default function MarkWorkoutProgress({
                         styles.markWorkoutProgress__workoutInput,
                         {
                           [styles.markWorkoutProgress__workoutInput_completedWorkout]:
-                            currentWorkoutExercisesProgress &&
+                            workoutExercisesProgress &&
                             requiredExercisesQuantity
-                              ? (currentWorkoutExercisesProgress.progressData[
-                                  index
-                                ] /
+                              ? (workoutExercisesProgress.progressData[index] /
                                   requiredExercisesQuantity[index]) *
                                   100 >=
                                 100
@@ -183,7 +178,7 @@ export default function MarkWorkoutProgress({
                         },
                       )}
                       type="number"
-                      placeholder={`${currentWorkoutExercisesProgress?.progressData[index] || 0}`}
+                      placeholder={`${workoutExercisesProgress?.progressData[index] || 0}`}
                       id={index.toString()}
                       name="WorkoutProgressItemInput"
                       onChange={(event) => onWorkoutProgressInputChange(event)}
@@ -199,7 +194,7 @@ export default function MarkWorkoutProgress({
           {!withExercises ? (
             <div className={styles.markWorkoutProgress__demarcationContainer}>
               <p className={styles.markWorkoutProgress__demarcationMessage}>
-                {currentWorkoutExercisesProgress?.workoutCompleted
+                {workoutExercisesProgress?.workoutCompleted
                   ? 'Вы уже отметили выполнение данной тренировки'
                   : 'Вы ещё не отметили выполнение данной тренировки'}
               </p>
@@ -209,15 +204,17 @@ export default function MarkWorkoutProgress({
           )}
 
           <button
-            disabled={isLoading}
+            disabled={loading}
             className={classNames(styles.markWorkoutProgress__btnSendData, {
-              [styles.markWorkoutProgress__btnSendData_inactive]: isLoading,
+              [styles.markWorkoutProgress__btnSendData_mobileText]:
+                isWorkoutCompleted,
+              [styles.markWorkoutProgress__btnSendData_inactive]: loading,
             })}
             onClick={(event) => {
               onClickSendWorkoutProgress(event);
             }}
           >
-            {isCurrentWorkoutCompleted
+            {isWorkoutCompleted
               ? 'Сбросить прогресс по тренировке'
               : withExercises
                 ? 'Сохранить'

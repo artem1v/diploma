@@ -1,10 +1,5 @@
 import { SetStateAction } from 'react';
 
-export interface initialStoreState {
-  currentCourse: null | CourseItemInterface;
-  // текущий курс
-}
-
 export interface LoginAndSignupDataInterface {
   email: string;
   password: string;
@@ -34,6 +29,50 @@ export interface CourseItemInterface {
   durationInDays: number;
   workouts: string[];
   __v: number;
+}
+
+export interface UserDataInterface {
+  _id: string;
+  email: string;
+  password: string;
+  selectedCourses: string[];
+  courseProgress: CourseProgressInterface[];
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}
+
+export interface ExerciseInterface {
+  name: string;
+  quantity: number;
+  _id: string;
+}
+
+export interface WorkoutsListInterface {
+  _id: string;
+  name: string;
+  video: string;
+  exercises: ExerciseInterface[];
+  __v: number;
+}
+
+export interface WorkoutsStateInterface {
+  courseId: string;
+  workoutsList: WorkoutsListInterface[];
+}
+
+export interface WorkoutProgressInterface {
+  workoutId: string;
+  workoutCompleted: boolean;
+  progressData: number[];
+  _id: string;
+}
+
+export interface CourseProgressInterface {
+  courseId: string;
+  courseCompleted: boolean;
+  workoutsProgress: WorkoutProgressInterface[];
+  _id: string;
 }
 
 export interface FormErrorsInterface {

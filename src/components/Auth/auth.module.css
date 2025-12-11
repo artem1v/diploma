@@ -1,19 +1,26 @@
 .auth__container {
-  position: absolute;
+  position: fixed;
+  z-index: 200;
   top: calc((50% - 150px));
-  z-index: 100;
   left: calc((100% - 360px) / 2);
-
-  width: 360px;
 
   display: flex;
   align-items: center;
   flex-direction: column;
   gap: 48px;
-  border-radius: 30px;
+  width: 360px;
   padding: 40px;
+  border-radius: 30px;
   background-color: #ffffff;
   box-shadow: 0px 4px 67px -12px rgba(0, 0, 0, 0.13);
+
+  @media screen and (max-width: 760px) {
+    top: calc((50% - 200px));
+    left: calc((100% - 343px) / 2);
+    width: 343px;
+    padding-left: 31.5px;
+    padding-right: 31.5px;
+  }
 }
 
 .auth__formContainer {
@@ -29,9 +36,9 @@
 .auth__input {
   width: 100%;
   height: 52px;
-  border-radius: 8px;
-  border: 1px solid #d0cece;
   padding: 16px 18px 16px 18px;
+  border: 1px solid #d0cece;
+  border-radius: 8px;
 
   font-weight: 400;
   font-size: 18px;
@@ -42,30 +49,6 @@
 
 .auth__input_error {
   border-color: #db0030;
-}
-
-.auth__input:-ms-input-placeholder {
-  font-weight: 400;
-  font-size: 18px;
-  line-height: 110%;
-  letter-spacing: 0px;
-  color: #d0cece;
-}
-
-.auth__input::-webkit-input-placeholder {
-  font-weight: 400;
-  font-size: 18px;
-  line-height: 110%;
-  letter-spacing: 0px;
-  color: #d0cece;
-}
-
-.auth__input::-ms-input-placeholder {
-  font-weight: 400;
-  font-size: 18px;
-  line-height: 110%;
-  letter-spacing: 0px;
-  color: #d0cece;
 }
 
 .auth__input::placeholder {
@@ -79,11 +62,11 @@
 .errorContainer {
   margin-top: 10px;
   margin-bottom: 34px;
+  text-align: center;
   font-weight: 400;
   font-size: 14px;
   line-height: 110%;
   letter-spacing: 0px;
-  text-align: center;
   color: #f84d4d;
 }
 
@@ -93,60 +76,78 @@
   gap: 10px;
 }
 
-.auth__btnSendData {
-  width: 100%;
-  height: 52px;
-  border-radius: 46px;
-  padding: 16px 26px 16px 26px;
-  border: none;
-  background-color: #bcec30;
-
-  cursor: pointer;
-}
-
-.auth__btnSendData:hover {
-  background-color: #c6ff00;
-}
-
-.auth__btnSendData_inactive {
-  background-color: #f7f7f7;
-}
-
-.auth__btnSendData_inactive:hover {
-  background-color: #f7f7f7;
-}
-
+.auth__btnSendData,
 .auth__btnFormChange {
   width: 100%;
   height: 52px;
-  border-radius: 46px;
   padding: 16px 26px 16px 26px;
-  border: 1px solid #000000;
-  background-color: transparent;
-
-  cursor: pointer;
-}
-
-.auth__btnFormChange:hover {
-  background-color: #f7f7f7;
-}
-
-.auth__btnFormChange_inactive {
-  border: 1px solid #999999;
-}
-
-.auth__btnFormChange_inactive:hover {
-  background-color: transparent;
-}
-
-.auth__btnText {
+  border: none;
+  border-radius: 46px;
+  background-color: #bcec30;
+  transition: 0.2s;
+  text-align: center;
   font-weight: 400;
   font-size: 18px;
   line-height: 110%;
   letter-spacing: 0px;
-  color: #000000;
+  cursor: pointer;
 }
 
-.auth__btnText_inactive {
+@media (hover: hover) {
+  .auth__btnSendData:hover {
+    background-color: #c6ff00;
+  }
+}
+
+.auth__btnSendData:active {
+  color: #ffffff;
+  background-color: #000000;
+}
+
+.auth__btnSendData_inactive {
+  color: #999999;
+  background-color: #f7f7f7;
+}
+
+.auth__btnSendData_inactive:hover {
+  color: #999999;
+  background-color: #f7f7f7;
+}
+
+.auth__btnSendData_inactive:active {
+  color: #999999;
+  background-color: #f7f7f7;
+}
+
+.auth__btnFormChange {
+  border: 1px solid #000000;
+  background-color: transparent;
+}
+
+@media (hover: hover) {
+  .auth__btnFormChange:hover {
+    background-color: #f7f7f7;
+  }
+}
+
+.auth__btnFormChange:active {
+  background-color: #e9eced;
+}
+
+.auth__btnFormChange_inactive {
+  border-color: #999999;
+  background-color: transparent;
+  color: #999999;
+}
+
+.auth__btnFormChange_inactive:hover {
+  border-color: #999999;
+  background-color: transparent;
+  color: #999999;
+}
+
+.auth__btnFormChange_inactive:active {
+  border-color: #999999;
+  background-color: transparent;
   color: #999999;
 }
