@@ -1,5 +1,5 @@
 .auth__container {
-  position: fixed;
+  position: absolute;
   top: calc((50% - 150px));
   z-index: 100;
   left: calc((100% - 360px) / 2);
@@ -144,6 +144,7 @@
   font-size: 18px;
   line-height: 110%;
   letter-spacing: 0px;
+  color: #000000;
 }
 
 .auth__btnText_inactive {

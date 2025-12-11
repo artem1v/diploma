@@ -2,21 +2,18 @@
 
 import Image from 'next/image';
 import classNames from 'classnames';
-import { SetStateAction, useState } from 'react';
+import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { AxiosError } from 'axios';
-import { toast } from 'react-toastify';
 
 import { userLogin, userSignup } from '@/services/authApi';
-import { getUserData } from '@/services/courseApi';
 
 import { useAppDispatch, useAppSelector } from '@/store/store';
 import {
+  setisOpenPopup,
   setisSignUp,
-  setUserId,
   setStorageLogin,
   setStorageToken,
-  setSelectedCourses,
-  setCourseProgress,
 } from '@/store/features/authSlice';
 
 import {
@@ -29,14 +26,16 @@ import { formErrors } from '@/services/utilities';
 
 import styles from './auth.module.css';
 
-export default function Auth({
-  authPopup,
-}: {
-  authPopup: React.Dispatch<SetStateAction<boolean>>;
-}) {
+// asdzxcqwe@example.com
+// Asdzxcqwe@@!
+
+export default function Auth() {
+  const router = useRouter();
   const dispatch = useAppDispatch();
 
-  const { isSignup } = useAppSelector((state) => state.authentication);
+  const { isOpenPopup, isSignup } = useAppSelector(
+    (state) => state.authentication,
+  );
 
   const [loginAndSignupData, setLoginAndSignupData] =
     useState<LoginAndSignupDataInterface>({
@@ -95,11 +94,13 @@ export default function Auth({
     dispatch(setisSignUp(!isSignup));
   }
 
-  async function userFormRequest(event: React.MouseEvent<HTMLButtonElement>) {
+  function userFormRequest(event: React.MouseEvent<HTMLButtonElement>) {
     event.preventDefault();
     event.stopPropagation();
 
     setLoading(true);
+
+    console.log(loginAndSignupData);
 
     if (
       !formErrors({
@@ -115,60 +116,55 @@ export default function Auth({
     }
 
     const usedFunction = isSignup ? userSignup : userLogin;
-    try {
-      const response = await usedFunction(loginAndSignupData);
 
-      if (!isSignup) {
-        const loginResponse = response as LoginPromiseInterface;
-        dispatch(setStorageLogin(loginAndSignupData.email));
-        dispatch(setStorageToken(loginResponse.token));
-
-        toast.success('Вход выполнен');
-        authPopup(false);
-
-        getUserData(loginResponse.token).then((response) => {
-          dispatch(setUserId(response._id));
-          dispatch(setSelectedCourses(response.selectedCourses));
-          dispatch(setCourseProgress(response.courseProgress));
-        });
-      } else {
-        const signupResponse = response as SignupPromiseInterface;
-        toast.success(signupResponse.message);
-        onFormTypeChange(event);
-      }
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        if (error.response) {
-          setErrorMessage(error.response.data.message);
-
-          const hasEmail: boolean = error.response.data.message
-            .toLowerCase()
-            .includes('email');
-
-          switch (hasEmail) {
-            case true:
-              setErrors({
-                ...errors,
-                email: true,
-              });
-              break;
-
-            case false:
-              setErrors({
-                ...errors,
-                password: true,
-              });
-              break;
-          }
-        } else if (error.request) {
-          setErrorMessage('Проверьте интернет-соединение и попробуйте позже');
+    usedFunction(loginAndSignupData)
+      .then((response) => {
+        if (!isSignup) {
+          const loginResponse = response as LoginPromiseInterface;
+          dispatch(setStorageLogin(loginAndSignupData.email));
+          dispatch(setStorageToken(loginResponse.token));
         } else {
-          setErrorMessage('Неизвестная ошибка');
+          // const signupResponse = response as SignupPromiseInterface;
+          // toast.success(signupResponse.message);
         }
-      }
-    } finally {
-      setLoading(false);
-    }
+
+        dispatch(setisOpenPopup(!isOpenPopup));
+        return response;
+      })
+      .catch((error) => {
+        if (error instanceof AxiosError) {
+          if (error.response) {
+            setErrorMessage(error.response.data.message);
+
+            const hasEmail: boolean = error.response.data.message
+              .toLowerCase()
+              .includes('email');
+
+            switch (hasEmail) {
+              case true:
+                setErrors({
+                  ...errors,
+                  email: true,
+                });
+                break;
+
+              case false:
+                setErrors({
+                  ...errors,
+                  password: true,
+                });
+                break;
+            }
+          } else if (error.request) {
+            setErrorMessage('Проверьте интернет-соединение и попробуйте позже');
+          } else {
+            setErrorMessage('Неизвестная ошибка');
+          }
+        }
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }
 
   return (

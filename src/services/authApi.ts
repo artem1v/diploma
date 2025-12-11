@@ -18,6 +18,7 @@ export function userLogin(
       },
     })
     .then((response) => {
+      console.log(response);
       return response.data;
     });
 }
@@ -32,6 +33,25 @@ export function userSignup(
       },
     })
     .then((response) => {
+      console.log(response);
       return response.data;
     });
 }
+
+// export function getBothTokens(
+//   userData: SigninDataInterface,
+// ): Promise<{ access: string; refresh: string }> {
+//   return axios.post(URL_AUTH + '/token', userData).then((response) => {
+//     return response.data;
+//   });
+// }
+
+// export function refreshAccesToken(
+//   refreshToken: string,
+// ): Promise<{ access: string }> {
+//   return axios
+//     .post(URL_AUTH + '/token/refresh', { refresh: refreshToken })
+//     .then((response) => {
+//       return response.data;
+//     });
+// }

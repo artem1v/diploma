@@ -1,98 +1,23 @@
 'use client';
 
 import Image from 'next/image';
-import classNames from 'classnames';
-import { useState } from 'react';
-import { AxiosError } from 'axios';
-import { useParams } from 'next/navigation';
-import { toast } from 'react-toastify';
 
-import { addCourse } from '@/services/courseApi';
-
-import { useAppDispatch, useAppSelector } from '@/store/store';
-import { updateSelectedCourses } from '@/store/features/authSlice';
-
-import Auth from '../Auth/Auth';
 import Header from '../Header/Header';
 import FittingNumber from './FittingNumber';
+
+import { useAppSelector } from '@/store/store';
 
 import { pictureDefiner } from '@/services/utilities';
 
 import styles from './coursePage.module.css';
 
-export default function CoursePage({
-  currentCourseId,
-}: {
-  currentCourseId: string;
-}) {
-  // const params = useParams<{ id: string }>();
-  const dispatch = useAppDispatch();
-
+export default function CoursePage() {
+  // export default function CoursePage({ id }: { id: string }) {
   const { currentCourse } = useAppSelector((state) => state.courses);
-  const { user } = useAppSelector((state) => state.authentication);
-
-  const [isOpenAuthPopup, setIsOpenAuthPopup] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-
-  // const currentCourseId = courseId;
-  // const currentCourseId = courseId ? courseId : params.id;
-  const isAlreadySelected = user.selectedCourses.includes(currentCourseId);
-
-  async function addingCourseButtonHandler(
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-  ) {
-    event.preventDefault();
-    event.stopPropagation();
-
-    setIsLoading(true);
-
-    if (!user.token) {
-      toast.warning('Необходима авторизация. Войдите в аккаунт');
-      setIsLoading(false);
-      return;
-    }
-
-    if (isAlreadySelected) {
-      toast.info('Чтобы удалить курс, перейдите в профиль');
-      setIsLoading(false);
-      return;
-    }
-
-    try {
-      const resultOfAdding = await addCourse(currentCourseId, user.token);
-
-      toast.success(resultOfAdding);
-      dispatch(updateSelectedCourses(currentCourseId));
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        if (error.response) {
-          toast.error(error.response.data.message);
-        } else {
-          toast.error('Функционал временно недоступен, попробуйте позже');
-        }
-      }
-    } finally {
-      setIsLoading(false);
-    }
-  }
 
   return (
-    <div style={{ position: 'relative' }}>
-      {isOpenAuthPopup ? (
-        <>
-          <div
-            className={styles.auth__popupListener}
-            onClick={() => {
-              setIsOpenAuthPopup(false);
-            }}
-          ></div>
-          <Auth authPopup={setIsOpenAuthPopup} />
-        </>
-      ) : (
-        ''
-      )}
-
-      <Header withInscription={true} authPopup={setIsOpenAuthPopup} />
+    <>
+      <Header withInscription={true} />
       <div className={styles.course__pictureContainer}>
         <Image
           src={pictureDefiner(
@@ -112,9 +37,7 @@ export default function CoursePage({
       <ul className={styles.fitting__container}>
         {currentCourse?.fitting.map((fittingEl: string, index) => (
           <li key={index} className={styles.fitting__item}>
-            <div>
-              <FittingNumber number={index + 1} />
-            </div>
+            <FittingNumber number={index + 1} />
             <p className={styles.fitting__itemText}>{fittingEl}</p>
           </li>
         ))}
@@ -158,20 +81,8 @@ export default function CoursePage({
               <li>помогают противостоять стрессам</li>
             </ul>
 
-            <button
-              className={classNames(styles.addingCourse__btn, {
-                [styles.addingCourse__btn_inactive]: isLoading,
-              })}
-              disabled={isLoading}
-              onClick={(event) => {
-                addingCourseButtonHandler(event);
-              }}
-            >
-              {user.token
-                ? isAlreadySelected
-                  ? 'Курс уже добавлен'
-                  : 'Добавить курс'
-                : 'Войдите, чтобы добавить курс'}
+            <button className={styles.addingCourse__btn}>
+              Войдите, чтобы добавить курс
             </button>
           </div>
         </div>
@@ -179,7 +90,6 @@ export default function CoursePage({
         <div className={styles.addingCourse__picture}>
           <Image
             className={styles.addingCourse__sportsman}
-            priority
             src={'/img/sportsman.png'}
             alt="sportsman"
             width={487}
@@ -203,6 +113,6 @@ export default function CoursePage({
           />
         </div>
       </div>
-    </div>
+    </>
   );
 }
