@@ -1,31 +1,19 @@
-.workout__page_container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
 .workoutProgress__popupListener {
   position: absolute;
-  z-index: 100;
-  top: -200px;
-  left: calc((var(--container-width) / 2) - 50vw);
-  width: 100vw;
-  height: calc(150vh + 200px);
+  top: -50px;
+  left: -50%;
+  z-index: 50;
+  width: 200%;
+  height: calc(100% + 50px);
   opacity: 0.2;
   background-color: #000000;
 }
 
 .course__title {
-  align-self: flex-start;
   font-weight: 500;
   font-size: 60px;
   line-height: 100%;
   letter-spacing: 0px;
-
-  @media screen and (max-width: 760px) {
-    font-size: 24px;
-    line-height: 110%;
-  }
 }
 
 .workout__video {
@@ -35,28 +23,10 @@
   margin-bottom: 40px;
   border: none;
   border-radius: 30px;
-
-  @media screen and (max-width: 760px) {
-    width: 710px;
-    height: 391px;
-    margin-top: 24px;
-    margin-bottom: 24px;
-    border-radius: 19px;
-  }
-
-  @media screen and (max-width: 710px) {
-    width: 343px;
-    height: 189px;
-    border-radius: 9px;
-  }
 }
 
 .workout__fallback_container {
   margin-bottom: 40px;
-
-  @media screen and (max-width: 760px) {
-    margin-bottom: 24px;
-  }
 }
 
 .workout__fallback_title {
@@ -86,11 +56,6 @@
   cursor: pointer;
 }
 
-.workouts__container_center {
-  display: flex;
-  justify-content: center;
-}
-
 .workouts__container {
   display: flex;
   flex-direction: column;
@@ -99,11 +64,6 @@
   border-radius: 30px;
   background-color: #ffffff;
   box-shadow: 0px 4px 67px -12px rgba(0, 0, 0, 0.13);
-
-  @media screen and (max-width: 760px) {
-    width: 343px;
-    padding: 30px;
-  }
 }
 
 .workout__title {
@@ -121,12 +81,6 @@
   width: 100%;
   margin-top: 20px;
   margin-bottom: 40px;
-
-  @media screen and (max-width: 760px) {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-  }
 }
 
 .workout__progressContainer {
@@ -143,30 +97,20 @@
 .workouts__progressBtn {
   width: 320px;
   height: 52px;
+  border-radius: 46px;
   padding: 16px;
   border: none;
-  border-radius: 46px;
   background-color: #bcec30;
-  transition: 0.2s;
+  cursor: pointer;
+
   text-align: center;
   font-weight: 400;
   font-size: 18px;
   line-height: 110%;
   letter-spacing: 0px;
-  cursor: pointer;
-
-  @media screen and (max-width: 760px) {
-    width: 100%;
-  }
+  color: #000000;
 }
 
-@media (hover: hover) {
-  .workouts__progressBtn:hover {
-    background-color: #c6ff00;
-  }
-}
-
-.workouts__progressBtn:active {
-  color: #ffffff;
-  background-color: #000000;
+.workouts__progressBtn:hover {
+  background-color: #c6ff00;
 }

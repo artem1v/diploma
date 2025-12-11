@@ -2,12 +2,9 @@
 
 import Main from '@/components/Main/Main';
 
-import { useAuthHook } from '@/services/hooks/useAuthHook';
-import useSelectedAndProgress from '@/services/hooks/useSelectedAndProgress';
+import { useAuthHook } from '@/services/useAuthHook';
 
 export default function MainPage() {
   useAuthHook();
-  useSelectedAndProgress();
-
   return <Main />;
 }

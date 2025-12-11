@@ -19,7 +19,6 @@ interface initialState {
     // выбранные курсы
 
     courseProgress: CourseProgressInterface[];
-    // прогресс по курсам
   };
 }
 

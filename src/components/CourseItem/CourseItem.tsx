@@ -2,15 +2,23 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { SetStateAction, useState } from 'react';
+import { useState, SetStateAction } from 'react';
 import { AxiosError } from 'axios';
 import { usePathname } from 'next/navigation';
 import { toast } from 'react-toastify';
 
-import { addCourse, removeCourse } from '@/services/api/courseApi';
+import {
+  getUserData,
+  addCourse,
+  removeCourse,
+  resetCourseProgress,
+} from '@/services/courseApi';
 
 import { useAppDispatch, useAppSelector } from '@/store/store';
-import { updateSelectedCourses } from '@/store/features/authSlice';
+import {
+  setCourseProgress,
+  updateSelectedCourses,
+} from '@/store/features/authSlice';
 import { setCurrentCourse } from '@/store/features/courseSlice';
 
 import DifficultyItem from '../DifficultyItem/DifficultyItem';
@@ -19,6 +27,8 @@ import Progressbar from '../Progressbar/Progressbar';
 import {
   CourseItemInterface,
   WorkoutsStateInterface,
+  WorkoutProgressInterface,
+  CourseProgressInterface,
 } from '@/sharedInterfaces/sharedInterfaces';
 
 import { pictureDefiner, progressbarCourseDefiner } from '@/services/utilities';
@@ -37,6 +47,7 @@ export default function CourseItem({
   withProgress: boolean;
   isAbleToAdd: boolean;
   courseWorkouts?: WorkoutsStateInterface;
+  progressWorkouts?: CourseProgressInterface;
   workoutsPopUp?: React.Dispatch<SetStateAction<boolean>>;
   confirmPopup?: React.Dispatch<SetStateAction<boolean>>;
 }) {
@@ -45,7 +56,7 @@ export default function CourseItem({
 
   const { user } = useAppSelector((state) => state.authentication);
 
-  const [addRemoveLoading, setAddRemoveLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   let progressbarLevel: number = 0;
   if (withProgress && courseWorkouts) {
@@ -70,11 +81,11 @@ export default function CourseItem({
     event.preventDefault();
     event.stopPropagation();
 
-    setAddRemoveLoading(true);
+    setIsLoading(true);
 
     if (!user.token) {
       toast.warning('Необходима авторизация. Войдите в аккаунт');
-      setAddRemoveLoading(false);
+      setIsLoading(false);
       return;
     }
 
@@ -82,16 +93,16 @@ export default function CourseItem({
 
     if (isAlreadySelected && pathname === '/main') {
       toast.info('Курс уже добавлен!');
-      setAddRemoveLoading(false);
+      setIsLoading(false);
       return;
     }
 
     const usedFunction = isAlreadySelected ? removeCourse : addCourse;
 
     try {
-      const resultOfUserAction = await usedFunction(courseItem._id, user.token);
+      const resultOfUserAct = await usedFunction(courseItem._id, user.token);
 
-      toast.success(resultOfUserAction);
+      toast.success(resultOfUserAct);
       dispatch(updateSelectedCourses(courseItem._id));
     } catch (error) {
       if (error instanceof AxiosError) {
@@ -102,7 +113,7 @@ export default function CourseItem({
         }
       }
     } finally {
-      setAddRemoveLoading(false);
+      setIsLoading(false);
     }
   }
 
@@ -110,15 +121,13 @@ export default function CourseItem({
     <div className={styles.course}>
       <div className={styles.course__pictureContainer}>
         <Image
-          className={styles.course__image}
-          priority
           src={pictureDefiner(courseItem.nameEN, 'item')}
           alt="course picture"
           width={360}
           height={325}
         />
 
-        {addRemoveLoading ? (
+        {isLoading ? (
           <div className={styles.addRemove__icon_loading}></div>
         ) : (
           <svg
@@ -145,10 +154,7 @@ export default function CourseItem({
       </div>
 
       <div className={styles.course__infoContainer}>
-        <Link
-          onClick={onClickSetCourse}
-          href={`/main/course/${courseItem._id}`}
-        >
+        <Link onClick={onClickSetCourse} href={`/course/${courseItem._id}`}>
           <h3 className={styles.course__title}>{courseItem.nameRU}</h3>
 
           <div className={styles.course__infoWrapper}>

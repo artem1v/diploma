@@ -2,17 +2,15 @@
 
 import Image from 'next/image';
 import classNames from 'classnames';
-import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useState } from 'react';
 import { AxiosError } from 'axios';
+import { useParams } from 'next/navigation';
 import { toast } from 'react-toastify';
 
-import { addCourse } from '@/services/api/courseApi';
+import { addCourse } from '@/services/courseApi';
 
 import { useAppDispatch, useAppSelector } from '@/store/store';
 import { updateSelectedCourses } from '@/store/features/authSlice';
-import { setCurrentCourse } from '@/store/features/courseSlice';
-import { setUtilityLoading } from '@/store/features/utilitySlice';
 
 import Auth from '../Auth/Auth';
 import Header from '../Header/Header';
@@ -22,23 +20,23 @@ import { pictureDefiner } from '@/services/utilities';
 
 import styles from './coursePage.module.css';
 
-export default function CoursePage() {
-  const params = useParams<{ id: string }>();
+export default function CoursePage({
+  currentCourseId,
+}: {
+  currentCourseId: string;
+}) {
+  // const params = useParams<{ id: string }>();
   const dispatch = useAppDispatch();
 
+  const { currentCourse } = useAppSelector((state) => state.courses);
   const { user } = useAppSelector((state) => state.authentication);
-  const { allCourses, currentCourse } = useAppSelector(
-    (state) => state.courses,
-  );
-  const { loading } = useAppSelector((state) => state.utilities);
 
   const [isOpenAuthPopup, setIsOpenAuthPopup] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const currentCourseId = params.id;
+  // const currentCourseId = courseId;
+  // const currentCourseId = courseId ? courseId : params.id;
   const isAlreadySelected = user.selectedCourses.includes(currentCourseId);
-  const course = allCourses.find(
-    (courseEl) => courseEl._id === currentCourseId,
-  );
 
   async function addingCourseButtonHandler(
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
@@ -46,17 +44,17 @@ export default function CoursePage() {
     event.preventDefault();
     event.stopPropagation();
 
-    dispatch(setUtilityLoading(true));
+    setIsLoading(true);
 
     if (!user.token) {
       toast.warning('Необходима авторизация. Войдите в аккаунт');
-      dispatch(setUtilityLoading(false));
+      setIsLoading(false);
       return;
     }
 
     if (isAlreadySelected) {
       toast.info('Чтобы удалить курс, перейдите в профиль');
-      dispatch(setUtilityLoading(false));
+      setIsLoading(false);
       return;
     }
 
@@ -74,15 +72,9 @@ export default function CoursePage() {
         }
       }
     } finally {
-      dispatch(setUtilityLoading(false));
+      setIsLoading(false);
     }
   }
-
-  useEffect(() => {
-    if (!currentCourse && course) {
-      dispatch(setCurrentCourse(course));
-    }
-  }, [course]);
 
   return (
     <div style={{ position: 'relative' }}>
@@ -103,30 +95,22 @@ export default function CoursePage() {
       <Header withInscription={true} authPopup={setIsOpenAuthPopup} />
       <div className={styles.course__pictureContainer}>
         <Image
-          className={styles.course__image}
-          priority
-          src={pictureDefiner(course ? course.nameEN : 'default', 'page')}
+          src={pictureDefiner(
+            currentCourse ? currentCourse.nameEN : 'default',
+            'page',
+          )}
           alt="course picture"
           width={1160}
           height={310}
         />
 
-        <Image
-          className={styles.course__image_mobile}
-          priority
-          src={pictureDefiner(course ? course.nameEN : 'default', 'item')}
-          alt="course picture mobile"
-          width={343}
-          height={325}
-        />
-
-        <h2 className={styles.course__title}>{course?.nameRU}</h2>
+        <h2 className={styles.course__title}>{currentCourse?.nameRU}</h2>
       </div>
 
       <h3 className={styles.auxiliary__title}>Подойдет для вас, если:</h3>
 
       <ul className={styles.fitting__container}>
-        {course?.fitting.map((fittingEl: string, index) => (
+        {currentCourse?.fitting.map((fittingEl: string, index) => (
           <li key={index} className={styles.fitting__item}>
             <div>
               <FittingNumber number={index + 1} />
@@ -139,7 +123,7 @@ export default function CoursePage() {
       <h3 className={styles.auxiliary__title}>Направления</h3>
 
       <ul className={styles.directions__container}>
-        {course?.directions.map((directionEl: string, index) => (
+        {currentCourse?.directions.map((directionEl: string, index) => (
           <li key={index} className={styles.directions__item}>
             <svg
               width="20"
@@ -176,9 +160,9 @@ export default function CoursePage() {
 
             <button
               className={classNames(styles.addingCourse__btn, {
-                [styles.addingCourse__btn_inactive]: loading,
+                [styles.addingCourse__btn_inactive]: isLoading,
               })}
-              disabled={loading}
+              disabled={isLoading}
               onClick={(event) => {
                 addingCourseButtonHandler(event);
               }}
@@ -208,14 +192,6 @@ export default function CoursePage() {
             alt="vector"
             width={670}
             height={391}
-          />
-
-          <Image
-            className={styles.addingCourse__vector_mobile}
-            src={'/img/vector-mobile.png'}
-            alt="vector"
-            width={475}
-            height={339}
           />
 
           <Image

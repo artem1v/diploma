@@ -29,16 +29,22 @@ export default function Header({
   const [isOpenManagementPanel, setIsOpenManagementPanel] =
     useState<boolean>(false);
 
+  function toggleManagementPanel(
+    event: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
+    state: boolean,
+  ) {
+    event.stopPropagation();
+
+    setIsOpenManagementPanel(state);
+  }
+
   function userLogout(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
     event.preventDefault();
     event.stopPropagation();
 
     setIsOpenManagementPanel(false);
 
-    dispatch(setCurrentCourse(null));
-    dispatch(setCurrentWorkout(null));
     dispatch(clearStorageTokens());
-
     router.push('/main');
   }
 
@@ -48,11 +54,9 @@ export default function Header({
         className={styles.header__anchorPortal}
         id="portalToTheTopOfThePage"
       />
-
-      <header style={{ alignSelf: 'normal' }}>
+      <header>
         <div className={styles.logoLogin__wrapper}>
           <Image
-            className={styles.login__logo}
             src={
               withInscription ? '/img/logo-inscription.png' : '/img/logo.png'
             }
@@ -64,19 +68,7 @@ export default function Header({
               dispatch(setCurrentWorkout(null));
               router.push('/main');
             }}
-          />
-
-          <Image
-            className={styles.login__logo_mobile}
-            src={'/img/logo.png'}
-            alt="skypro fitness logo mobile"
-            width={220}
-            height={35}
-            onClick={() => {
-              dispatch(setCurrentCourse(null));
-              dispatch(setCurrentWorkout(null));
-              router.push('/main');
-            }}
+            style={{ cursor: 'pointer' }}
           />
 
           {user.email ? (
@@ -101,7 +93,7 @@ export default function Header({
                 />
               </svg>
 
-              <p className={styles.login__userEmail}>{user.email}</p>
+              <h4 className={styles.login__userEmail}>{user.email}</h4>
 
               <svg
                 width="14"
@@ -122,10 +114,10 @@ export default function Header({
 
                   <Link
                     className={styles.login__panel_profileBtn}
-                    onClick={() => {
-                      setIsOpenManagementPanel(false);
+                    onClick={(event) => {
+                      toggleManagementPanel(event, false);
                     }}
-                    href={'/main/profile'}
+                    href={'/profile'}
                   >
                     Мой профиль
                   </Link>
