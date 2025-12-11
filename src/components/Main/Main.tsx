@@ -1,88 +1,45 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { AxiosError } from 'axios';
-import { toast } from 'react-toastify';
+import { useState } from 'react';
 
-import {
-  getAllCourses,
-  getWorkoutsList,
-  getCourseProgress,
-} from '@/services/courseApi';
+import { useAppSelector } from '@/store/store';
 
-import { useAppDispatch, useAppSelector } from '@/store/store';
-import { setisOpenPopup } from '@/store/features/authSlice';
-import { setAllCourses } from '@/store/features/courseSlice';
-
+import Auth from '../Auth/Auth';
 import Header from '@/components/Header/Header';
 import CourseItem from '@/components/CourseItem/CourseItem';
-import Auth from '../Auth/Auth';
-
-import {
-  CourseItemInterface,
-  CourseProgressInterface,
-  WorkoutsListInterface,
-  WorkoutsStateInterface,
-} from '@/sharedInterfaces/sharedInterfaces';
+import CourseItemSkeleton from '../CourseItem/CourseItemSkeleton';
 
 import styles from './main.module.css';
 
 export default function Main() {
-  const dispatch = useAppDispatch();
+  const { allCourses } = useAppSelector((state) => state.courses);
+  const { loading, error } = useAppSelector((state) => state.utilities);
 
-  const { isOpenPopup, user } = useAppSelector((state) => state.authentication);
-
-  const [courses, setCourses] = useState<CourseItemInterface[]>([]);
-  const [errorMessage, setErrorMessage] = useState<string>('');
-
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-
-  useEffect(() => {
-    async function getCourses() {
-      setIsLoading(true);
-
-      try {
-        const allCourses = await getAllCourses();
-        dispatch(setAllCourses(allCourses));
-        setCourses(allCourses);
-      } catch (error) {
-        if (error instanceof AxiosError) {
-          if (error.response) {
-            setErrorMessage(error.response.data.message);
-          } else {
-            setErrorMessage('Курсы временно недоступны, попробуйте позже');
-          }
-        }
-      } finally {
-        setIsLoading(false);
-      }
-    }
-
-    getCourses();
-  }, []);
+  const [isOpenAuthPopup, setIsOpenAuthPopup] = useState<boolean>(false);
 
   return (
     <div style={{ position: 'relative' }}>
-      {isOpenPopup ? (
+      {isOpenAuthPopup ? (
         <>
           <div
             className={styles.auth__popupListener}
             onClick={() => {
-              dispatch(setisOpenPopup(!isOpenPopup));
+              setIsOpenAuthPopup(false);
             }}
           ></div>
-          <Auth />
+          <Auth authPopup={setIsOpenAuthPopup} />
         </>
       ) : (
         ''
       )}
 
-      <Header withInscription={true} />
+      <Header withInscription={true} authPopup={setIsOpenAuthPopup} />
 
       <div className={styles.mainTitle__container}>
         <h1 className={styles.mainTitle__text}>
           Начните заниматься спортом
-          <br />и улучшите качество жизни
+          <br className={styles.mainTitle__lineBreaks} /> и улучшите качество
+          жизни
         </h1>
 
         <div className={styles.slogan__container}>
@@ -106,12 +63,16 @@ export default function Main() {
       </div>
 
       <div className={styles.courses__container}>
-        {isLoading ? (
-          <div>Загрузка курсов...</div>
-        ) : errorMessage ? (
-          errorMessage
+        {loading ? (
+          Array.from({ length: 6 }).map((item, index) => (
+            <div key={index}>
+              <CourseItemSkeleton withProgress={false} />
+            </div>
+          ))
+        ) : error ? (
+          <p className={styles.courses__error_message}>{error}</p>
         ) : (
-          courses.map((courseItem) => (
+          allCourses.map((courseItem) => (
             <CourseItem
               key={courseItem._id}
               courseItem={courseItem}
@@ -120,6 +81,12 @@ export default function Main() {
             />
           ))
         )}
+      </div>
+
+      <div className={styles.courses__anchorBtn_container}>
+        <button className={styles.courses__anchorBtn}>
+          <a href="#portalToTheTopOfThePage">Наверх ↑ </a>
+        </button>
       </div>
     </div>
   );

@@ -1,30 +1,21 @@
 'use client';
 
 import classNames from 'classnames';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { AxiosError } from 'axios';
 import { toast } from 'react-toastify';
 
 import { useAppDispatch, useAppSelector } from '@/store/store';
-import { setisOpenPopup, setUserId } from '@/store/features/authSlice';
-import {
-  setCurrentCourse,
-  setCurrentWorkout,
-} from '@/store/features/courseSlice';
+import { setCurrentWorkout } from '@/store/features/courseSlice';
 
 import {
   WorkoutsStateInterface,
   CourseProgressInterface,
 } from '@/sharedInterfaces/sharedInterfaces';
 
-import {
-  progressWorkoutNumberDefiner,
-  workoutsNamesHelper,
-} from '@/services/utilities';
+import { workoutsNamesHelper } from '@/services/utilities';
 
 import styles from './selectWorkout.module.css';
-import { current } from '@reduxjs/toolkit';
 
 export default function SelectWorkout({
   courseWorkouts,
@@ -36,12 +27,9 @@ export default function SelectWorkout({
   const router = useRouter();
   const dispatch = useAppDispatch();
 
-  const { user } = useAppSelector((state) => state.authentication);
-  const { allCourses } = useAppSelector((state) => state.courses);
+  const { loading } = useAppSelector((state) => state.utilities);
 
   const [chosenWorkoutId, setChosenWorkoutId] = useState<string>('');
-  const [errorMessage, setErrorMessage] = useState<string>('');
-  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   function onClickSetWorkoutId(event: React.ChangeEvent<HTMLInputElement>) {
     setChosenWorkoutId(event.target.id);
@@ -61,11 +49,8 @@ export default function SelectWorkout({
     }
 
     if (chosenWorkoutId && currentWorkout) {
-      console.log(chosenWorkoutId);
-      console.log(currentWorkout);
-
       dispatch(setCurrentWorkout(currentWorkout));
-      router.push(`/workout/${chosenWorkoutId}`);
+      router.push(`/main/workout/${chosenWorkoutId}`);
 
       return;
     }
@@ -82,30 +67,18 @@ export default function SelectWorkout({
           ? courseWorkouts
           : courseWorkouts.workoutsList.map((workout) => {
               return (
-                <div
-                  key={workout._id}
-                  // onClick={(event) => {
-                  //   onClickSetWorkoutId(event);
-                  // }}
-                >
+                <div key={workout._id}>
                   <li className={styles.workoutSelection__workoutItem}>
                     <input
                       className={styles.workoutItem__input}
-                      // value={'yes'}
-                      // checked={workout._id === chosenWorkoutId}
                       type="radio"
                       id={workout._id}
                       name="isWorkoutComplete"
-                      // onClick={(event) => {
-                      //   onClickSetWorkoutId(event);
-                      // }}
                       onChange={onClickSetWorkoutId}
                     />
                     <label
                       className={classNames(styles.workoutItem__label, {
                         [styles.workoutItem__label_completedWorkout]:
-                          // Math.round(Math.random()),
-
                           typeof courseProgress === 'string'
                             ? false
                             : courseProgress.workoutsProgress
@@ -144,15 +117,10 @@ export default function SelectWorkout({
       </ul>
 
       <button
-        disabled={isLoading}
-        className={classNames(
-          styles.workoutSelection__btnSendData,
-          styles.workoutSelection__btnText,
-          {
-            [styles.workoutSelection__btnSendData_inactive]: isLoading,
-            [styles.workoutSelection__btnText_inactive]: isLoading,
-          },
-        )}
+        disabled={loading}
+        className={classNames(styles.workoutSelection__btnSendData, {
+          [styles.workoutSelection__btnSendData_inactive]: loading,
+        })}
         onClick={(event) => {
           getOnWorkoutPage(event);
         }}

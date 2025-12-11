@@ -1,12 +1,61 @@
-.workoutSelection__popupListener {
+.workoutSelection__popupListener,
+.confirmPopup__popupListener {
   position: absolute;
-  top: -50px;
-  left: -50%;
-  z-index: 50;
-  width: 200%;
-  height: calc(100% + 50px);
+  z-index: 100;
+  top: -200px;
+  left: calc((var(--container-width) / 2) - 50vw);
+  width: 100vw;
+  height: calc(150vh + 200px);
   opacity: 0.2;
   background-color: #000000;
+}
+
+.confirmPopup__container {
+  position: fixed;
+  z-index: 200;
+  top: calc((50% - 150px));
+  left: calc((100% - 426px) / 2);
+
+  display: flex;
+  flex-direction: column;
+  width: 426px;
+  max-height: 596px;
+  padding: 40px;
+  border-radius: 30px;
+  background-color: #ffffff;
+  box-shadow: 0px 4px 67px -12px rgba(0, 0, 0, 0.13);
+
+  @media screen and (max-width: 760px) {
+    top: calc((50% - 200px));
+    left: calc((100% - 343px) / 2);
+    width: 343px;
+  }
+}
+
+.confirmPopup__title {
+  font-weight: 600;
+  font-size: 32px;
+  line-height: 110%;
+  letter-spacing: 0px;
+  text-align: center;
+  margin-bottom: 34px;
+}
+
+.confirmPopup__svgContainer {
+  display: flex;
+  justify-content: space-around;
+}
+
+.confirmPopup__confirmBtn {
+  width: 58px;
+  height: 58px;
+  border-radius: 46px;
+  border: none;
+  background-color: transparent;
+}
+
+.confirmPopup__confirmBtn svg {
+  cursor: pointer;
 }
 
 .profile__title {
@@ -15,28 +64,50 @@
   line-height: 110%;
   letter-spacing: 0px;
   margin-bottom: 40px;
+
+  @media screen and (max-width: 760px) {
+    font-weight: 500;
+    font-size: 24px;
+    margin-bottom: 24px;
+  }
 }
 
 .profile__title:last-of-type {
   margin-top: 60px;
+
+  @media screen and (max-width: 760px) {
+    margin-top: 24px;
+  }
 }
 
 .profile__container {
-  width: 100%;
   display: flex;
-  gap: 33px;
-  height: 257px;
-  border-radius: 30px;
-  background: #ffffff;
+  gap: 30px;
+  width: 100%;
   padding: 30px;
+  height: fit-content;
+  border-radius: 30px;
+  background-color: #ffffff;
 
   box-shadow: 0px 4px 67px -12px rgba(0, 0, 0, 0.13);
+
+  @media screen and (max-width: 760px) {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+.profile__container img {
+  @media screen and (max-width: 760px) {
+    width: 141px;
+    height: 141px;
+  }
 }
 
 .profile__info {
-  height: 181px;
   display: flex;
   flex-direction: column;
+  height: fit-content;
 }
 
 .profile__username {
@@ -44,34 +115,106 @@
   font-size: 32px;
   line-height: 110%;
   letter-spacing: 0px;
+
+  @media screen and (max-width: 760px) {
+    font-size: 24px;
+  }
 }
 
 .profile__login {
+  margin-top: 30px;
+  margin-bottom: 44px;
   font-weight: 400;
   font-size: 18px;
   line-height: 110%;
   letter-spacing: 0px;
-  margin-top: 30px;
-  margin-bottom: 44px;
+
+  @media screen and (max-width: 760px) {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    font-size: 16px;
+  }
 }
 
 .profile__logoutBtn {
   width: 192px;
   height: 52px;
-  border-radius: 46px;
   padding: 16px;
   border: 1px solid #000000;
-
+  border-radius: 46px;
+  background-color: transparent;
+  transition: 0.2s;
+  text-align: center;
   font-weight: 400;
   font-size: 18px;
   line-height: 110%;
   letter-spacing: 0px;
-
   cursor: pointer;
+
+  @media screen and (max-width: 760px) {
+    width: 100%;
+  }
+}
+
+@media (hover: hover) {
+  .profile__logoutBtn:hover {
+    background-color: #f7f7f7;
+  }
+}
+
+.profile__logoutBtn:active {
+  background-color: #e9eced;
 }
 
 .courses__container {
   display: flex;
   flex-wrap: wrap;
   gap: 40px;
+
+  @media screen and (max-width: 760px) {
+    justify-content: center;
+    gap: 24px;
+  }
+}
+
+.courses__message {
+  font-weight: 500;
+  font-size: 32px;
+  line-height: 110%;
+  letter-spacing: 0px;
+}
+
+.courses__anchorBtn_container {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+
+  @media screen and (min-width: 711px) {
+    display: none;
+  }
+}
+
+.courses__anchorBtn {
+  width: 127px;
+  height: 52px;
+  margin-top: 24px;
+  margin-bottom: 29px;
+  padding: 16px;
+  border: none;
+  border-radius: 46px;
+  background-color: #bcec30;
+
+  text-align: center;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 110%;
+  letter-spacing: 0px;
+}
+
+.courses__anchorBtn:active {
+  background-color: #000000;
+
+  a {
+    color: #ffffff;
+  }
 }

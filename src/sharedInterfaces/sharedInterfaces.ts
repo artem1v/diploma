@@ -39,6 +39,7 @@ export interface UserDataInterface {
   courseProgress: CourseProgressInterface[];
   createdAt: string;
   updatedAt: string;
+  __v: number;
 }
 
 export interface ExerciseInterface {
@@ -52,6 +53,7 @@ export interface WorkoutsListInterface {
   name: string;
   video: string;
   exercises: ExerciseInterface[];
+  __v: number;
 }
 
 export interface WorkoutsStateInterface {

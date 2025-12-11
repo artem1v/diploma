@@ -2,10 +2,8 @@ import {
   FormErrorsInterface,
   ExerciseInterface,
   WorkoutsListInterface,
-  WorkoutProgressInterface,
   CourseProgressInterface,
 } from '@/sharedInterfaces/sharedInterfaces';
-import { current } from '@reduxjs/toolkit';
 
 export function pictureDefiner(name: string, size: string) {
   switch (name) {
@@ -46,10 +44,6 @@ export function formErrors({
       ? !passwordCheck.trim()
       : false
   ) {
-    // console.log(
-    //   !loginAndSignupData.email.trim(),
-    //   !loginAndSignupData.password.trim(),
-    // );
     setErrorMessage('Пожалуйста, заполните все поля');
     isCorrect = false;
 
@@ -116,6 +110,7 @@ export function progressWorkoutNumberDefiner(progressData: number[]): number {
 export function progressTotalNumberDefiner(
   courseProgress: CourseProgressInterface[],
   courseId: string,
+  workoutsList: WorkoutsListInterface[],
 ): number {
   const currentCourse = courseProgress.find(
     (courseEl) => courseEl.courseId === courseId,
@@ -125,6 +120,12 @@ export function progressTotalNumberDefiner(
     return 0;
   }
 
+  if (exercisesTotalNumberDefiner(workoutsList) === 1) {
+    return currentCourse.workoutsProgress.map(
+      (workoutProgress) => workoutProgress.workoutCompleted,
+    ).length;
+  }
+
   return currentCourse.workoutsProgress.reduce(
     (sum, workoutProgress) =>
       sum + progressWorkoutNumberDefiner(workoutProgress.progressData),
@@ -132,44 +133,16 @@ export function progressTotalNumberDefiner(
   );
 }
 
-// export function workoutProgressDefiner(
-//   workoutsList: WorkoutsListInterface[],
-//   workoutsProgress: WorkoutProgressInterface[],
-//   workoutId: string,
-// ): number {
-//   const currentWorkout = workoutsList.find(
-//     (workout) => workout._id === workoutId,
-//   );
-//   let currentWorkoutExercisesNumber;
-
-//   const currentWorkoutProgress = workoutsProgress.find(
-//     (workoutProgress) => workoutProgress.workoutId === workoutId,
-//   );
-//   let currentWorkoutProgressExercisesNumber;
-
-//   if (
-//     !currentWorkout?.exercises.length ||
-//     !currentWorkoutProgress?.workoutCompleted
-//   ) {
-//     return 0;
-//   }
-
-//   if (currentWorkout.exercises) {
-//     currentWorkoutExercisesNumber = exercisesWorkoutNumberDefiner(
-//       currentWorkout.exercises,
-//     );
-//   }
-
-// }
-
-export function progressbarLevelDefiner(
+export function progressbarCourseDefiner(
   courseProgress: CourseProgressInterface[],
   courseId: string,
   workoutsList: WorkoutsListInterface[],
 ): number {
   const currentLevel =
-    (progressTotalNumberDefiner(courseProgress, courseId) /
-      exercisesTotalNumberDefiner(workoutsList)) *
+    (progressTotalNumberDefiner(courseProgress, courseId, workoutsList) /
+      (exercisesTotalNumberDefiner(workoutsList) === 1
+        ? workoutsList.length
+        : exercisesTotalNumberDefiner(workoutsList))) *
     100;
 
   if (currentLevel === 0) {
@@ -193,7 +166,7 @@ export function progressbarLevelDefiner(
 
 export function workoutsNamesHelper(workoutName: string): string[] {
   if (workoutName.includes('Урок')) {
-    return [workoutName.split('.')[0], workoutName.split('.').slice(1).join()];
+    return [workoutName.split('.')[0], workoutName.split('. ').slice(1).join()];
   }
 
   if (workoutName.includes(' / ')) {
@@ -205,13 +178,3 @@ export function workoutsNamesHelper(workoutName: string): string[] {
 
   return [workoutName];
 }
-
-// 6i67sm | Урок 3. Новые движения | no exercises
-
-// ypox9r | Урок 1. Основы | no exercises
-
-// ab1c3f | Утренняя практика / Йога на каждый день / 1 день / Алексей Казубский
-
-// kfpq8e | Разогрев мышц 2.0
-
-// q02a6i | Техника дыхания

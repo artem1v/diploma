@@ -2,12 +2,16 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import {
   CourseItemInterface,
+  WorkoutsStateInterface,
   WorkoutsListInterface,
 } from '@/sharedInterfaces/sharedInterfaces';
 
 interface initialStoreState {
   allCourses: CourseItemInterface[];
   // все курсы
+
+  allWorkouts: WorkoutsStateInterface[];
+  // все тренировки
 
   currentCourse: null | CourseItemInterface;
   // текущий курс
@@ -18,6 +22,7 @@ interface initialStoreState {
 
 const initialState: initialStoreState = {
   allCourses: [],
+  allWorkouts: [],
   currentCourse: null,
   currentWorkout: null,
 };
@@ -28,6 +33,13 @@ export const courseSlice = createSlice({
   reducers: {
     setAllCourses: (state, action: PayloadAction<CourseItemInterface[]>) => {
       state.allCourses = action.payload;
+    },
+
+    setAllWorkouts: (
+      state,
+      action: PayloadAction<WorkoutsStateInterface[]>,
+    ) => {
+      state.allWorkouts = action.payload;
     },
 
     setCurrentCourse: (
@@ -46,7 +58,11 @@ export const courseSlice = createSlice({
   },
 });
 
-export const { setAllCourses, setCurrentCourse, setCurrentWorkout } =
-  courseSlice.actions;
+export const {
+  setAllCourses,
+  setAllWorkouts,
+  setCurrentCourse,
+  setCurrentWorkout,
+} = courseSlice.actions;
 
 export const courseSliceReducer = courseSlice.reducer;
