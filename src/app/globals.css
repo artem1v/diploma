@@ -1,0 +1,43 @@
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  font-family: var(--font-roboto), 'Arial';
+  background-color: #fafafa;
+  overflow-x: hidden;
+
+  --container-width: 1160px;
+  padding-right: calc(50% - var(--container-width) / 2);
+  padding-left: calc(50% - var(--container-width) / 2);
+
+  @media screen and (min-width: 761px) and (max-width: 1160px) {
+    --container-width: 760px;
+  }
+
+  @media screen and (min-width: 711px) and (max-width: 760px) {
+    --container-width: 710px;
+  }
+
+  @media screen and (min-width: 376px) and (max-width: 710px) {
+    --container-width: 375px;
+  }
+
+  @media screen and (max-width: 375px) {
+    --container-width: 343px;
+  }
+}
+
+a,
+input,
+button {
+  color: #000000;
+  text-decoration: none;
+  font-family: var(--font-roboto), 'Arial';
+}
+
+ul {
+  list-style: none;
+}

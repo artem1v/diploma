@@ -1,0 +1,211 @@
+.markWorkoutProgress__container {
+  position: fixed;
+  z-index: 200;
+  top: calc((50% - 150px));
+  left: calc((100% - 426px) / 2);
+
+  display: flex;
+  flex-direction: column;
+  width: 426px;
+  max-height: 596px;
+  padding: 40px;
+  border-radius: 30px;
+  background: #ffffff;
+  box-shadow: 0px 4px 67px -12px rgba(0, 0, 0, 0.13);
+
+  @media screen and (max-width: 760px) {
+    top: calc((50% - 200px));
+    left: calc((100% - 343px) / 2);
+    width: 343px;
+  }
+}
+
+.progressMarkResult__container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 34px;
+}
+
+.progressMarkResult__title {
+  font-weight: 600;
+  font-size: 40px;
+  line-height: 110%;
+  letter-spacing: 0px;
+  text-align: center;
+
+  @media screen and (max-width: 760px) {
+    font-weight: 400;
+    font-size: 32px;
+  }
+}
+
+.markWorkoutProgress__title {
+  font-weight: 400;
+  font-size: 32px;
+  line-height: 110%;
+  letter-spacing: 0px;
+}
+
+.markWorkoutProgress__inputsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 48px;
+  margin-bottom: 34px;
+  padding-right: 20px;
+  overflow-y: auto;
+
+  @media screen and (max-width: 760px) {
+    margin-top: 34px;
+  }
+}
+
+.markWorkoutProgress__inputsContainer::-webkit-scrollbar {
+  width: 6px;
+}
+
+.markWorkoutProgress__inputsContainer::-webkit-scrollbar-track {
+  border-radius: 10px;
+  background-color: #f7f7f7;
+}
+
+.markWorkoutProgress__inputsContainer::-webkit-scrollbar-thumb {
+  min-height: 116px;
+  border-radius: 10px;
+  border: none;
+  background-color: #000000;
+
+  @media screen and (max-width: 760px) {
+    min-height: 80px;
+  }
+}
+
+.markWorkoutProgress__workoutLabel {
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 110%;
+  letter-spacing: 0px;
+
+  @media screen and (max-width: 760px) {
+    font-size: 16px;
+  }
+}
+
+.markWorkoutProgress__workoutInput {
+  width: 100%;
+  height: 52px;
+  margin-top: 10px;
+  padding: 16px 18px 16px 18px;
+  border-radius: 8px;
+  border: 1px solid #d0cece;
+
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 110%;
+  letter-spacing: 0px;
+
+  @media screen and (max-width: 760px) {
+    height: 47px;
+    font-size: 14px;
+  }
+}
+
+.markWorkoutProgress__workoutInput::-webkit-outer-spin-button,
+.markWorkoutProgress__workoutInput::-webkit-inner-spin-button {
+  appearance: none;
+}
+
+.markWorkoutProgress__workoutInput::placeholder {
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 110%;
+  letter-spacing: 0px;
+  color: #d0cece;
+
+  @media screen and (max-width: 760px) {
+    font-size: 14px;
+  }
+}
+
+.markWorkoutProgress__workoutInput_completedWorkout {
+  border-color: #00c1ff;
+}
+
+.markWorkoutProgress__workoutInput_completedWorkout::placeholder {
+  color: #00c1ff;
+}
+
+.markWorkoutProgress__workoutInput_error {
+  border-color: #db0030;
+  color: #db0030;
+}
+
+.markWorkoutProgress__demarcationContainer {
+  margin-top: 48px;
+  margin-bottom: 34px;
+
+  @media screen and (max-width: 760px) {
+    margin-top: 34px;
+  }
+}
+
+.markWorkoutProgress__demarcationMessage {
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 110%;
+  letter-spacing: 0px;
+
+  @media screen and (max-width: 760px) {
+    font-size: 16px;
+  }
+}
+
+.markWorkoutProgress__btnSendData {
+  width: 100%;
+  height: 52px;
+  padding: 16px;
+  border: none;
+  border-radius: 46px;
+  background-color: #bcec30;
+  transition: 0.2s;
+  text-align: center;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 110%;
+  letter-spacing: 0px;
+  color: #000000;
+  cursor: pointer;
+}
+
+@media (hover: hover) {
+  .markWorkoutProgress__btnSendData:hover {
+    background-color: #c6ff00;
+  }
+}
+
+.markWorkoutProgress__btnSendData:active {
+  color: #ffffff;
+  background-color: #000000;
+}
+
+.markWorkoutProgress__btnSendData_mobileText {
+  @media screen and (max-width: 760px) {
+    font-size: 14px;
+  }
+}
+
+.markWorkoutProgress__btnSendData_inactive {
+  color: #999999;
+  background-color: #f7f7f7;
+}
+
+.markWorkoutProgress__btnSendData_inactive:hover {
+  color: #999999;
+  background-color: #f7f7f7;
+}
+
+.markWorkoutProgress__btnSendData_inactive:active {
+  color: #999999;
+  background-color: #f7f7f7;
+}
