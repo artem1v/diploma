@@ -1,33 +1,14 @@
 .header__anchorPortal {
-  @media screen and (min-width: 711px) {
+  @media screen and (min-width: 376px) {
     display: none;
   }
 }
 
 .logoLogin__wrapper {
-  display: flex;
-  justify-content: space-between;
   margin-top: 50px;
   margin-bottom: 60px;
-
-  @media screen and (max-width: 760px) {
-    margin-top: 40px;
-    margin-bottom: 40px;
-  }
-}
-
-.login__logo {
-  cursor: pointer;
-
-  @media screen and (max-width: 710px) {
-    display: none;
-  }
-}
-
-.login__logo_mobile {
-  @media screen and (min-width: 711px) {
-    display: none;
-  }
+  display: flex;
+  justify-content: space-between;
 }
 
 .login__infoContainer {
@@ -36,24 +17,6 @@
   align-items: center;
   height: 50px;
   cursor: pointer;
-
-  @media screen and (max-width: 760px) {
-    gap: 10px;
-  }
-
-  @media screen and (max-width: 710px) {
-    height: 36px;
-
-    svg:first-child {
-      height: 36px;
-      width: 36px;
-    }
-
-    svg:last-child {
-      height: 7px;
-      width: 10px;
-    }
-  }
 }
 
 .login__userEmail {
@@ -63,10 +26,6 @@
   letter-spacing: 0px;
   padding-left: 16px;
   padding-right: 12px;
-
-  @media screen and (max-width: 760px) {
-    display: none;
-  }
 }
 
 .login__userEmail_panel {
@@ -92,16 +51,13 @@
   cursor: default;
 }
 
-.login__panel_profileBtn,
-.login__panel_logoutBtn,
-.loginBtn {
+.login__panel_profileBtn {
   width: 100%;
   height: 52px;
-  padding: 16px;
-  border: none;
   border-radius: 46px;
-  background-color: #bcec30;
-  transition: 0.2s;
+  padding: 16px 26px 16px 26px;
+  background: #bcec30;
+  border: none;
   text-align: center;
   font-weight: 400;
   font-size: 18px;
@@ -110,50 +66,44 @@
   cursor: pointer;
 }
 
-@media (hover: hover) {
-  .login__panel_profileBtn:hover {
-    background-color: #c6ff00;
-  }
-}
-
-.login__panel_profileBtn:active {
-  color: #ffffff;
-  background-color: #000000;
+.login__panel_profileBtn:hover {
+  background-color: #c6ff00;
 }
 
 .login__panel_logoutBtn {
+  width: 100%;
+  height: 52px;
+  border-radius: 46px;
+  padding: 16px 26px 16px 26px;
   margin-top: 10px;
+  background: transparent;
   border: 1px solid #000000;
-  background-color: transparent;
+  text-align: center;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 110%;
+  letter-spacing: 0px;
+  cursor: pointer;
 }
 
-@media (hover: hover) {
-  .login__panel_logoutBtn:hover {
-    background-color: #f7f7f7;
-  }
-}
-
-.login__panel_logoutBtn:active {
-  background-color: #e9eced;
+.login__panel_logoutBtn:hover {
+  background-color: #f7f7f7;
 }
 
 .loginBtn {
   width: 103px;
-
-  @media screen and (max-width: 710px) {
-    width: 83px;
-    height: 36px;
-    padding: 8px;
-  }
+  height: 52px;
+  border: none;
+  border-radius: 46px;
+  padding: 16px 26px;
+  background: rgba(188, 236, 48, 1);
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 110%;
+  letter-spacing: 0px;
+  cursor: pointer;
 }
 
-@media (hover: hover) {
-  .loginBtn:hover {
-    background-color: #c6ff00;
-  }
-}
-
-.loginBtn:active {
-  color: #ffffff;
-  background-color: #000000;
+.loginBtn:hover {
+  background-color: #c6ff00;
 }

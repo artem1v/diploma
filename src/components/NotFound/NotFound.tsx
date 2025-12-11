@@ -11,7 +11,7 @@ export default function NotFound() {
             <h1 className={styles.notFound__title}>404</h1>
             <hr className={styles.notFound__title_demarcationLine} />
             <h2 className={styles.notFound__subTitle}>
-              Страница <br className={styles.notFound__lineBreak} />
+              Страница <br />
               не найдена
             </h2>
           </div>
