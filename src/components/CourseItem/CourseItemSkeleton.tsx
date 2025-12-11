@@ -26,24 +26,12 @@ export default function CourseItemSkeleton({
           direction={direction}
         />
 
-        <svg
-          className={styles.addRemove__icon}
-          width="32"
-          height="32"
-          viewBox="0 0 32 32"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M15.9998 29.3333C23.3636 29.3333 29.3332 23.3638 29.3332 16C29.3332 8.63616 23.3636 2.66663 15.9998 2.66663C8.63604 2.66663 2.6665 8.63616 2.6665 16C2.6665 23.3638 8.63604 29.3333 15.9998 29.3333ZM9.33317 14.6666V17.3333H22.6665V14.6666H9.33317Z"
-            fill="white"
-          />
-        </svg>
+        <div className={styles.addRemove__icon_skeleton}></div>
       </div>
 
       <div className={styles.course__infoContainer}>
         <Skeleton
-          style={{ marginBottom: '20px' }}
+          className={styles.course__title_skeleton}
           height={35}
           borderRadius={10}
           baseColor={baseColor}

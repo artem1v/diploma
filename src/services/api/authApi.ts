@@ -8,18 +8,20 @@ import {
 
 const URL_AUTH = 'https://wedev-api.sky.pro';
 
-export function userLogin(
+export async function userLogin(
   signinData: LoginAndSignupDataInterface,
 ): Promise<LoginPromiseInterface> {
-  return axios
-    .post(URL_AUTH + '/api/fitness/auth/login', signinData, {
+  const response = await axios.post(
+    URL_AUTH + '/api/fitness/auth/login',
+    signinData,
+    {
       headers: {
         'Content-Type': '',
       },
-    })
-    .then((response) => {
-      return response.data;
-    });
+    },
+  );
+
+  return response.data;
 }
 
 export function userSignup(

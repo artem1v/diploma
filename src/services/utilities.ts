@@ -1,4 +1,9 @@
-import { FormErrorsInterface } from '@/sharedInterfaces/sharedInterfaces';
+import {
+  FormErrorsInterface,
+  ExerciseInterface,
+  WorkoutsListInterface,
+  CourseProgressInterface,
+} from '@/sharedInterfaces/sharedInterfaces';
 
 export function pictureDefiner(name: string, size: string) {
   switch (name) {
@@ -39,10 +44,6 @@ export function formErrors({
       ? !passwordCheck.trim()
       : false
   ) {
-    console.log(
-      !loginAndSignupData.email.trim(),
-      !loginAndSignupData.password.trim(),
-    );
     setErrorMessage('Пожалуйста, заполните все поля');
     isCorrect = false;
 
@@ -76,4 +77,104 @@ export function formErrors({
   } else {
     return isCorrect;
   }
+}
+
+export function exercisesWorkoutNumberDefiner(
+  exercises: ExerciseInterface[],
+): number {
+  return exercises.reduce((sum, exercise) => sum + exercise.quantity, 0);
+}
+
+export function exercisesTotalNumberDefiner(
+  workoutsList: WorkoutsListInterface[],
+): number {
+  const totalQuantity = workoutsList.reduce(
+    (sum, workout) => sum + exercisesWorkoutNumberDefiner(workout.exercises),
+    0,
+  );
+
+  if (!totalQuantity) {
+    return 1;
+  }
+
+  return totalQuantity;
+}
+
+export function progressWorkoutNumberDefiner(progressData: number[]): number {
+  return progressData.reduce(
+    (sum, exerciseProgress) => sum + exerciseProgress,
+    0,
+  );
+}
+
+export function progressTotalNumberDefiner(
+  courseProgress: CourseProgressInterface[],
+  courseId: string,
+  workoutsList: WorkoutsListInterface[],
+): number {
+  const currentCourse = courseProgress.find(
+    (courseEl) => courseEl.courseId === courseId,
+  );
+
+  if (!currentCourse) {
+    return 0;
+  }
+
+  if (exercisesTotalNumberDefiner(workoutsList) === 1) {
+    return currentCourse.workoutsProgress.map(
+      (workoutProgress) => workoutProgress.workoutCompleted,
+    ).length;
+  }
+
+  return currentCourse.workoutsProgress.reduce(
+    (sum, workoutProgress) =>
+      sum + progressWorkoutNumberDefiner(workoutProgress.progressData),
+    0,
+  );
+}
+
+export function progressbarCourseDefiner(
+  courseProgress: CourseProgressInterface[],
+  courseId: string,
+  workoutsList: WorkoutsListInterface[],
+): number {
+  const currentLevel =
+    (progressTotalNumberDefiner(courseProgress, courseId, workoutsList) /
+      (exercisesTotalNumberDefiner(workoutsList) === 1
+        ? workoutsList.length
+        : exercisesTotalNumberDefiner(workoutsList))) *
+    100;
+
+  if (currentLevel === 0) {
+    return 0;
+  }
+
+  if (currentLevel < 1) {
+    return Math.ceil(currentLevel);
+  }
+
+  if (currentLevel > 1) {
+    return Math.floor(currentLevel);
+  }
+
+  if (currentLevel >= 100) {
+    return 100;
+  }
+
+  return currentLevel;
+}
+
+export function workoutsNamesHelper(workoutName: string): string[] {
+  if (workoutName.includes('Урок')) {
+    return [workoutName.split('.')[0], workoutName.split('. ').slice(1).join()];
+  }
+
+  if (workoutName.includes(' / ')) {
+    return [
+      workoutName.split(' / ')[0],
+      workoutName.split(' / ').slice(1, -1).join(' / '),
+    ];
+  }
+
+  return [workoutName];
 }
