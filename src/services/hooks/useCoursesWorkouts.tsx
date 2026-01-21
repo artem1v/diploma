@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react'; // Добавляем useRef
 import { AxiosError } from 'axios';
 
 import { getWorkoutsList } from '@/services/api/courseApi';
@@ -16,11 +16,25 @@ import { WorkoutsStateInterface } from '@/sharedInterfaces/sharedInterfaces';
 
 export default function useCoursesWorkouts() {
   const dispatch = useAppDispatch();
-
   const { user } = useAppSelector((state) => state.authentication);
+
+  // Используем ref для отслеживания предыдущих выбранных курсов
+  const prevSelectedCoursesRef = useRef<string[]>([]);
 
   useEffect(() => {
     if (!user.token) return;
+
+    // Проверяем, действительно ли изменились выбранные курсы
+    const selectedCoursesChanged =
+      JSON.stringify(user.selectedCourses) !==
+      JSON.stringify(prevSelectedCoursesRef.current);
+
+    if (!selectedCoursesChanged) {
+      return; // Не делаем запрос, если курсы не изменились
+    }
+
+    // Обновляем ref
+    prevSelectedCoursesRef.current = user.selectedCourses;
 
     dispatch(setUtilityLoading(true));
 
@@ -56,7 +70,7 @@ export default function useCoursesWorkouts() {
     }
 
     getSelectedCoursesWorkoutsLists();
-  }, [user.selectedCourses, user.courseProgress]);
+  }, [user.selectedCourses, user.token]); // Убрали user.courseProgress из зависимостей
 
   return <></>;
 }
