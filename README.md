@@ -42,7 +42,7 @@ Node Package Manager – Менеджер пакетов
 http://localhost:3000/main
 
 Клонирование репозитория:
-git clone https://github.com/golubevNikita/skypro-fitness
+https://github.com/artem1v/diploma?tab=readme-ov-file
 
 Установка зависимостей:
 npm install
