@@ -120,17 +120,19 @@ export function progressTotalNumberDefiner(
     return 0;
   }
 
+  // Считаем количество полностью завершенных тренировок
+  const completedWorkoutsCount = currentCourse.workoutsProgress.filter(
+    (workoutProgress) => workoutProgress.workoutCompleted,
+  ).length;
+
+  // Если каждая тренировка считается как единица (например, для уроков)
   if (exercisesTotalNumberDefiner(workoutsList) === 1) {
-    return currentCourse.workoutsProgress.map(
-      (workoutProgress) => workoutProgress.workoutCompleted,
-    ).length;
+    return completedWorkoutsCount;
   }
 
-  return currentCourse.workoutsProgress.reduce(
-    (sum, workoutProgress) =>
-      sum + progressWorkoutNumberDefiner(workoutProgress.progressData),
-    0,
-  );
+  // Для других случаев возвращаем количество завершенных тренировок
+  // (каждая завершенная тренировка = 1 единица прогресса)
+  return completedWorkoutsCount;
 }
 
 export function progressbarCourseDefiner(
@@ -138,30 +140,27 @@ export function progressbarCourseDefiner(
   courseId: string,
   workoutsList: WorkoutsListInterface[],
 ): number {
-  const currentLevel =
-    (progressTotalNumberDefiner(courseProgress, courseId, workoutsList) /
-      (exercisesTotalNumberDefiner(workoutsList) === 1
-        ? workoutsList.length
-        : exercisesTotalNumberDefiner(workoutsList))) *
-    100;
+  const completedWorkouts = progressTotalNumberDefiner(
+    courseProgress,
+    courseId,
+    workoutsList,
+  );
 
-  if (currentLevel === 0) {
+  const totalWorkouts = workoutsList.length;
+
+  // Если нет тренировок в курсе
+  if (totalWorkouts === 0) {
     return 0;
   }
 
-  if (currentLevel < 1) {
-    return Math.ceil(currentLevel);
-  }
+  // Рассчитываем процент завершенных тренировок
+  const currentLevel = (completedWorkouts / totalWorkouts) * 100;
 
-  if (currentLevel > 1) {
-    return Math.floor(currentLevel);
-  }
+  // Округляем вниз, чтобы прогресс увеличивался только после завершения всей тренировки
+  const roundedLevel = Math.floor(currentLevel);
 
-  if (currentLevel >= 100) {
-    return 100;
-  }
-
-  return currentLevel;
+  // Возвращаем не более 100%
+  return Math.min(roundedLevel, 100);
 }
 
 export function workoutsNamesHelper(workoutName: string): string[] {
