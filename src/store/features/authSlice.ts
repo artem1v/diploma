@@ -3,23 +3,17 @@ import { CourseProgressInterface } from '@/sharedInterfaces/sharedInterfaces';
 
 export interface initialState {
   isSignup: boolean;
-  // текущая форма: авторизация / регистрация
 
   user: {
     userId: string;
-    // id пользователя
-
+    
     email: string;
-    // email используется как логин
-
+   
     token: string;
-    // токен
-
+   
     selectedCourses: string[];
-    // выбранные курсы
-
+   
     courseProgress: CourseProgressInterface[];
-    // прогресс по курсам
   };
 }
 

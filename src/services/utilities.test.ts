@@ -129,7 +129,7 @@ describe('progressTotalNumberDefiner', () => {
         '6i67sm',
         findWorkoutsListByCourseId('6i67sm'),
       ),
-    ).toEqual(4);
+    ).toEqual(4); // 4 завершенные тренировки из 4 (курс завершен)
   });
 
   // no exercises course not completed
@@ -140,7 +140,7 @@ describe('progressTotalNumberDefiner', () => {
         'ypox9r',
         findWorkoutsListByCourseId('ypox9r'),
       ),
-    ).toEqual(1);
+    ).toEqual(1); // 1 завершенная тренировка из 5
   });
 
   // with exercises course completed
@@ -151,7 +151,7 @@ describe('progressTotalNumberDefiner', () => {
         'kfpq8e',
         findWorkoutsListByCourseId('kfpq8e'),
       ),
-    ).toEqual(130);
+    ).toEqual(3); // 3 завершенные тренировки из 3 (курс завершен)
   });
 
   // with exercises course not completed
@@ -162,7 +162,7 @@ describe('progressTotalNumberDefiner', () => {
         'ab1c3f',
         findWorkoutsListByCourseId('ab1c3f'),
       ),
-    ).toEqual(60);
+    ).toEqual(2); // 2 завершенные тренировки из 5
   });
 });
 
@@ -177,7 +177,7 @@ describe('progressbarCourseDefiner', () => {
         '6i67sm',
         findWorkoutsListByCourseId('6i67sm'),
       ),
-    ).toEqual(100);
+    ).toEqual(100); // 4/4 = 100%
   });
 
   // no exercises course not completed
@@ -188,7 +188,7 @@ describe('progressbarCourseDefiner', () => {
         'ypox9r',
         findWorkoutsListByCourseId('ypox9r'),
       ),
-    ).toEqual(20);
+    ).toEqual(20); // 1/5 = 20%
   });
 
   // with exercises course completed
@@ -199,7 +199,7 @@ describe('progressbarCourseDefiner', () => {
         'kfpq8e',
         findWorkoutsListByCourseId('kfpq8e'),
       ),
-    ).toEqual(100);
+    ).toEqual(100); // 3/3 = 100%
   });
 
   // with exercises course not completed
@@ -210,7 +210,7 @@ describe('progressbarCourseDefiner', () => {
         'ab1c3f',
         findWorkoutsListByCourseId('ab1c3f'),
       ),
-    ).toEqual(37);
+    ).toEqual(40); // 2/5 = 40%
   });
 });
 

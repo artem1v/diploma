@@ -8,16 +8,16 @@ import {
 
 interface initialStoreState {
   allCourses: CourseItemInterface[];
-  // все курсы
+  
 
   allWorkouts: WorkoutsStateInterface[];
-  // все тренировки
+  
 
   currentCourse: null | CourseItemInterface;
-  // текущий курс
+  
 
   currentWorkout: null | WorkoutsListInterface;
-  // текущая тренировка
+  
 }
 
 const initialState: initialStoreState = {

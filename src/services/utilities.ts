@@ -120,18 +120,16 @@ export function progressTotalNumberDefiner(
     return 0;
   }
 
-  // Считаем количество полностью завершенных тренировок
+  
   const completedWorkoutsCount = currentCourse.workoutsProgress.filter(
     (workoutProgress) => workoutProgress.workoutCompleted,
   ).length;
 
-  // Если каждая тренировка считается как единица (например, для уроков)
+  
   if (exercisesTotalNumberDefiner(workoutsList) === 1) {
     return completedWorkoutsCount;
   }
 
-  // Для других случаев возвращаем количество завершенных тренировок
-  // (каждая завершенная тренировка = 1 единица прогресса)
   return completedWorkoutsCount;
 }
 
@@ -148,18 +146,14 @@ export function progressbarCourseDefiner(
 
   const totalWorkouts = workoutsList.length;
 
-  // Если нет тренировок в курсе
   if (totalWorkouts === 0) {
     return 0;
   }
 
-  // Рассчитываем процент завершенных тренировок
   const currentLevel = (completedWorkouts / totalWorkouts) * 100;
 
-  // Округляем вниз, чтобы прогресс увеличивался только после завершения всей тренировки
   const roundedLevel = Math.floor(currentLevel);
 
-  // Возвращаем не более 100%
   return Math.min(roundedLevel, 100);
 }
 
