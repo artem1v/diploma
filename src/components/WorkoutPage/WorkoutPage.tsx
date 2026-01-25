@@ -93,7 +93,7 @@ export default function WorkoutPage() {
     if (!currentWorkout && workout) {
       dispatch(setCurrentWorkout(workout));
     }
-  }, [course, workout]);
+  }, [course, currentCourse, currentWorkout, dispatch, workout]);
 
   return (
     <div style={{ position: 'relative' }}>
