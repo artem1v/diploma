@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { Roboto } from 'next/font/google';
 
-import GetAllCourses from '@/services/hooks/getAllCourses';
+import GetAllCourses from '@/services/hooks/GetAllCourses';
 
 import ToastWrapper from '@/components/ToastWrapper/ToastWrapper';
 
