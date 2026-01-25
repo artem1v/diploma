@@ -70,7 +70,7 @@ export default function useCoursesWorkouts() {
     }
 
     getSelectedCoursesWorkoutsLists();
-  }, [user.selectedCourses, user.token]);
+  }, [dispatch, user.selectedCourses, user.token]);
 
   return <></>;
 }
